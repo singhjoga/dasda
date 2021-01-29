@@ -1,0 +1,11 @@
+<div class="position-absolute match-parent app-viewport">
+  <div class="position-absolute match-parent app-bg"></div>
+  <ng-container *ngIf="(isForcingStart$ | async) || isBrowserChrome; else templateNeedChrome">
+    <app-layout></app-layout>
+  </ng-container>
+  <ng-template #templateNeedChrome>
+    <div style="text-align:center">
+      <h1 class="color-warn">Bitte in Chrome öffnen.</h1>
+    </div>
+  </ng-template>
+</div>

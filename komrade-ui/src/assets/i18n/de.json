@@ -1,0 +1,55 @@
+{
+    "layout": {
+        "language": "Sprach"
+    },
+    "login": {
+        "title": "Einloggen",
+        "panel-text": "Einloggen",
+        "username": "Benutzername",
+        "password": "Passwort",
+        "login-button": "Einloggen"
+    },
+    "users": {
+        "user-form-title": "Benutzer erstellen",
+        "user-form-success": "Der Benutzer wurde erfolgreich gespeichert"
+    },
+    "actions": {
+        "create": "Erstellen",
+        "modify": "Bearbeiten",
+        "delete": "Löschen",
+        "detail": "Detail",
+        "save": "Speichern",
+        "cancel": "Abbrechen",
+        "yes": "Ja",
+        "no": "Nein"
+    },
+    "columns": {
+        "name": "Name",
+        "firstName": "Vorname",
+        "lastName": "Nachname",
+        "email": "E-mail",
+        "isSystem": "System?",
+        "isDisabled": "Gesperrt?",
+        "actions": "Aktionen"
+    },
+    "form": {
+        "name": "Name",
+        "firstName": "Vorname",
+        "lastName": "Nachname",
+        "email": "E-mail",
+        "isSystem": "System?",
+        "isDisabled": "Gesperrt?",
+        "userName": "Benutzername",
+        "password": "Passwort"
+    },
+    "Items per page:": "Objekte pro Seite:",
+    "Next page": "Nächste Seite",
+    "Previous page": "Vorherige Seite",
+    "First page": "Erste Seite",
+    "Last page": "Letzte Seite",
+    "confirm": {
+        "confirm-message-create": "Sind Sie sicher zu erstellen?",
+        "confirm-message-update": "Sind Sie sicher zu ändern?",
+        "confirm-message-delete": "Müssen Sie sicher zu entfernen?"
+    }
+}

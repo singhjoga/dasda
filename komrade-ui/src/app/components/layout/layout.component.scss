@@ -1,0 +1,63 @@
+@import "../../../komrade-theme";
+
+.flex-row {
+  display: flex;
+  width: 100%;
+}
+
+.logo {
+  width: 10%;
+}
+
+.menu-icon {
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+h1.layout-app-name {
+  margin-left: 8px;
+}
+
+.layout-sidenav-container {
+  flex: 1;
+}
+
+.mat-drawer {
+  width: 10%;
+}
+
+.logo {
+  background-color: #ffffff;
+  height: 7em;
+  width: 10em;
+}
+
+.mat-list-base .mat-list-item {
+  font-size: 14px;
+}
+
+.mat-drawer-content {
+  overflow: hidden;
+}
+
+.header-left {
+  width: 80%;
+  display: flex;
+  align-items: center;
+}
+
+.header-right {
+  width: 20%;
+  text-align: right;
+  font-size: 12px;
+}

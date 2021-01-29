@@ -1,0 +1,43 @@
+options:
+  scmRepository: &scmrepo
+     repositoryUrl: https://git.tech.rz.db.de/dbs-devops-solutions/applications/cmdb/cmdb-server.git
+     path:
+     ref: "branches/master"
+     provider: git
+     credentials:
+       username: jogagittoken
+       password: LTJQXU_ZDy8XR9fYEoom
+     checkoutPath: /  
+  scmRepository: &scmrepo2
+     repositoryUrl: https://github.com/singhjoga/ssh-session.git
+     path:
+     provider: git
+     ref: "branches/master"
+     credentials:
+       username: singhjoga
+       password: letmeinto@148 
+     checkoutPath: /  
+  variables:
+    aaaaa: abc
+    cccc: sss
+pipeline:
+  scm:
+    - repository: *scmrepo2
+
+
+  files:
+#    - {name: "aaa", targetFolder: "sss", extract: false}
+    - [settings.xml,/tmp/komrade,false]
+  parameters:
+  steps:
+   - name: "connect"
+     ssh:
+        host: "localhost"
+        username: "joga"
+        password: "joga123"
+        steps:
+         - name: "build"
+           scripts:
+             - mvn package  -s /tmp/komrade/settings.xml -DskipTests
+           artifacts:
+             - target/*.jar

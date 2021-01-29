@@ -1,0 +1,47 @@
+definitions:
+  services:
+   mysql:
+      image: mysql
+      variables:
+        MYSQL_DATABASE: pipelines
+        MYSQL_ROOT_PASSWORD: let_me_in
+  caches:
+    bundler: vendor/bundle  
+options:
+ source-code-repo: &sourceCodeRepo
+     repositoryUrl: http://xxx
+     projectStructure: single/multiple #svn supports multilple projects in the same repo
+     provider: git/svn
+     credentials:
+       username: xxx
+       password: xxx
+ variables:
+    aaaaa:abc
+    cccc:sss
+pipeline: #build,deploy,start,stop,undeploy
+  parameters:
+    sourceCode: 
+      repo: *sourceCodeRepo
+      ref: #tag/branch/trunk. 
+      url: #or complete url
+  steps:
+    - name: step1
+      ssh:
+        host:xxx
+        credentialsId:dd
+      container:
+        services:
+          - docker
+          - mysql
+        image:
+      caches:
+        - npm
+      before-script:
+      after-script:
+      scripts:
+        - npm install
+      artifacts:
+          - dist/*
+      trigger: manual #or condition
+
+    

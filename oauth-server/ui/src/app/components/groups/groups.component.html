@@ -1,0 +1,161 @@
+<p-progressBar mode="indeterminate" *ngIf='busy$ | async' [style]="{'height': '6px'}"></p-progressBar>
+
+<h3>Groups List</h3>
+
+<div class="div-table-actions">
+  <button type="button" pButton icon="pi pi-plus" (click)="showDialogToAdd()" label="Add"></button>
+</div>
+
+<p-menu #menu [popup]="true" [model]="items"></p-menu>
+<p-table [value]="groupsData$ | async" [paginator]="true" [rows]="ITEMS_PER_PAGE">
+  <ng-template pTemplate="header">
+    <tr>
+      <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+        {{col.header}}
+        <p-sortIcon [field]="col.field" ariaLabel="Activate to sort"
+          ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order">
+        </p-sortIcon>
+      </th>
+      <th class="table-action-column"></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-group>
+    <tr>
+      <td>{{ group.name }}</td>
+      <td>{{ group.description }}</td>
+      <td>{{ group.isSystem }}</td>
+      <td>{{ group.isDisabled }}</td>
+      <td class="table-action-column">
+        <i class="pi pi-ellipsis-v" pTooltip="Actions" tooltipPosition="top"
+          (click)="menu.toggle($event); onGroupsActionsMenu(group)"></i>
+      </td>
+    </tr>
+  </ng-template>
+
+</p-table>
+
+<p-dialog header="Group" [(visible)]="showDialog" [maximizable]="true" modal="modal" appendTo="body"
+  (onHide)="onDialogHide()">
+
+  <p-tabView [style]="{width: WIDTH, minWidth: WIDTH, maxHeight: HEIGHT, minHeight: HEIGHT}">
+    <p-tabPanel header="Group Data">
+      <form [formGroup]="groupForm">
+        <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 10px 0px">
+          <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+              Name *:
+            </div>
+            <div class="ui-grid-col-6">
+              <input type="text" pInputText [formControlName]="FORM_NAME" placeholder="Name" required />
+            </div>
+            <div class="ui-grid-col-4">
+              <p-message severity="error" text="Required"
+                *ngIf="!groupForm.controls[FORM_NAME].valid&&groupForm.controls[FORM_NAME].dirty"></p-message>
+            </div>
+          </div>
+
+          <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+              Description *:
+            </div>
+            <div class="ui-grid-col-6">
+              <input type="text" pInputText [formControlName]="FORM_DESCRIPTION" placeholder="Description" required />
+            </div>
+            <div class="ui-grid-col-4">
+              <p-message severity="error" text="Required"
+                *ngIf="!groupForm.controls[FORM_DESCRIPTION].valid&&groupForm.controls[FORM_DESCRIPTION].dirty">
+              </p-message>
+            </div>
+          </div>
+
+          <div class="ui-grid-row">
+            <div class="ui-grid-col-4">
+              Disabled?:
+            </div>
+            <div class="ui-grid-col-6">
+              <p-checkbox binary="false" [formControl]="groupForm.controls[FORM_DISABLED]"></p-checkbox>
+
+            </div>
+            <div class="ui-grid-col-4">
+              <p-message severity="error" text="Required"
+                *ngIf="!groupForm.controls[FORM_DISABLED].valid&&groupForm.controls[FORM_DISABLED].dirty"></p-message>
+            </div>
+          </div>
+
+        </div>
+
+        <p-footer>
+          <div class="footer-actions">
+            <button type="submit" pButton icon="pi pi-pencil" label="Save" (click)="save()"
+              [disabled]="!groupForm.valid"></button>
+            <button type="reset" pButton icon="pi pi-times" (click)="showDialog=false" label="Cancel"
+              class="ui-button-secondary"></button>
+          </div>
+        </p-footer>
+      </form>
+    </p-tabPanel>
+    <div *ngIf="!isNewGroup">
+      <p-tabPanel header="Roles">
+        <div class="div-table-actions">
+          <button type="button" pButton icon="pi pi-plus" (click)="showAddRoleDialog()" label="Add Roles"></button>
+        </div>
+        <p-table [value]="rolesData$ | async" [scrollable]="true" scrollHeight="450px">
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="name">
+                Name
+                <p-sortIcon field="name" ariaLabel="Activate to sort"
+                  ariaLabelDesc="Activate to sort in descending order"
+                  ariaLabelAsc="Activate to sort in ascending order">
+                </p-sortIcon>
+              </th>
+              <th class="table-action-column"></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-role>
+            <tr>
+              <td>{{ role.name }}</td>
+              <td class="table-action-column">
+                <i class="pi pi-ellipsis-v" pTooltip="Actions" tooltipPosition="top"
+                  (click)="menu.toggle($event); onRolesActionsMenu(role)"></i>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-tabPanel>
+      <p-tabPanel header="Members">
+        <div class="div-table-actions">
+          <button type="button" pButton icon="pi pi-plus" (click)="showAddUserDialog()" label="Add Users"></button>
+        </div>
+        <p-table [value]="usersData$ | async" [scrollable]="true" scrollHeight="450px">
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="name">
+                Name
+                <p-sortIcon field="name" ariaLabel="Activate to sort"
+                  ariaLabelDesc="Activate to sort in descending order"
+                  ariaLabelAsc="Activate to sort in ascending order">
+                </p-sortIcon>
+              </th>
+              <th class="table-action-column"></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-user>
+            <tr>
+              <td>{{ user.name }}</td>
+              <td class="table-action-column">
+                <i class="pi pi-ellipsis-v" pTooltip="Actions" tooltipPosition="top"
+                  (click)="menu.toggle($event); onUsersActionsMenu(user)"></i>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-tabPanel>
+    </div>
+  </p-tabView>
+</p-dialog>
+
+
+
+
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle" appendTo="body"></p-confirmDialog>

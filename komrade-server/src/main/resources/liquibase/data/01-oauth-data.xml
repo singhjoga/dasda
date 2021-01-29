@@ -1,0 +1,219 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+	<changeSet author="JogaSingh-Data" id="01.01">
+		<sql>
+			INSERT INTO
+			oauth_client_details (client_id,client_secret,resource_ids,	scope,authorized_grant_types,authorities,
+			access_token_validity,refresh_token_validity)
+			VALUES ('komrade-server','$2a$10$05uMnmpMsnfTWhSiGOE7GuoxwEIqlDzQYMK6a3r9VSrgWLRRXO/La','komrade-api',
+			'read,write','check_token,refresh_token,password','ROLE_ALL',25000,250000);
+		</sql>
+		<sql>
+			INSERT INTO
+			user (username,password,is_system,first_name,last_name,email)
+			VALUES ('admin','$2a$10$05uMnmpMsnfTWhSiGOE7GuoxwEIqlDzQYMK6a3r9VSrgWLRRXO/La', true,'System','Administrator',null);
+		</sql>
+		<sql>
+			INSERT INTO user_role (user_role_id,name,description,is_system,client_id)
+			VALUES (1,'SystemAdministrator','Role allowing all admin functions in the system', true,'global');
+			
+			INSERT INTO user_role_user (user_role_id, username) VALUES (1,'admin');
+		</sql>
+
+	</changeSet>
+	<changeSet author="JogaSingh-Data" id="01.02">
+		<preConditions onFail="MARK_RAN">
+			<sqlCheck expectedResult="0">SELECT COUNT(*) FROM APP_AUTH_SETTING WHERE SETTINGS_ID=1</sqlCheck>
+		</preConditions>	
+		<insert tableName="APP_AUTH_SETTING">
+        	<column name="SETTINGS_ID" valueNumeric="1"/>
+        	<column name="DISPLAY_ORDER" valueNumeric="1"/>
+        	<column name="NAME" value="Internal Users"/>
+			<column name="PROVIDER_TYPE" value="InternalDatabase"/>
+			<column name="CLIENT_ID" value="global"/>     	
+        	<column name="DESCRIPTION" value="It uses the internal database for authentication and authorization"/>
+        	<column name="SETTINGS_JSON" valueClobFile="internaldb-settings.json"/>
+    	</insert>
+    </changeSet>
+	<changeSet author="JogaSingh-Data" id="01.03">
+		<preConditions onFail="MARK_RAN">
+			<sqlCheck expectedResult="0">SELECT COUNT(*) FROM APP_AUTH_PERM WHERE PROP_NAME='role-permissions'</sqlCheck>
+		</preConditions>	
+		<insert tableName="APP_AUTH_PERM">
+        	<column name="PROP_NAME" value="role-permissions"/>
+        	<column name="PROP_VALUE" valueClobFile="role-permissions.def"/>
+    	</insert>
+    </changeSet>
+	<changeSet author="JogaSingh-Data" id="01.04" runAlways="true">
+		<sql>
+			DELETE APP_AUTH_PERM WHERE PROP_NAME='entity-actions';
+		</sql>
+		<insert tableName="APP_AUTH_PERM">
+        	<column name="PROP_NAME" value="entity-actions"/>
+        	<column name="PROP_VALUE" valueClobFile="entity-actions.def"/>
+    	</insert>
+    </changeSet>
+    <changeSet id="01.05" author="JogaSingh-Data" runOnChange="true">
+      <sql>
+      		--user ref data types
+      		INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'UserRefDataType','HostLocation','Host/Server Locations',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='HostLocation');
+      		INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'UserRefDataType','HostOsType','Host/Server Operating System Types',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='HostOsType');
+      		INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'UserRefDataType','BusProcess','Business Process or Application Groups',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='BusProcess');
+      		INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'UserRefDataType','DbProvider','Database Providers',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='DbProvider');
+      		INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'UserRefDataType','MsgProvider','Message Providers',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='MsgProvider');
+      		
+      		--property types
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'PropertyType','STR','String',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='STR');      		   
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'PropertyType','BOOL','Boolean',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='BOOL');      		   
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'PropertyType','NUM','Number',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='NUM');      		   
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'PropertyType','UID','Username',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='UID');      		   
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'PropertyType','PWD','Password',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='PWD');      		   
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'PropertyType','FILE','File from File Store',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='FILE');
+---------- external systems -------------
+      		--external system types
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'SystemType','CredProvider','Credentials Providers',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='CredProvider');
+      		--external system types
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'SystemType','RefSystem','Reference Systems',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='RefSystem');
+
+
+      		--credential providers
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'CredProvider','Internal','Internal credentials provider',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='Internal');
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'CredProvider','KeePass','KeePass file based credentials provider',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='KeePass');
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'CredProvider','Pleasant','Pleasant Server credentials provider',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='Pleasant');
+ 			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'CredProvider','Vault','HashiCorp credentials provider',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='Vault');
+      
+      		--reference systems such as JIRA,ITSM etc   
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'RefSystem','JIRA','Jira',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='JIRA');
+
+      		--Types supported by reference systems   
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'ExtRefType','Story','Story',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='Story');
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'ExtRefType','Defect','Defect',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='Defect');
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'ExtRefType','CR','Change Request',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='CR');
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'ExtRefType','OtherRef','Other',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='OtherRef');
+      
+-----------------      		   	
+      		--credential types	   
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'CredentialType','UserNamePassword','Username and Password combination',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='UserNamePassword');
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'CredentialType','UserNameSshKey','Username and SSH Key combination',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='UserNameSshKey');
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'CredentialType','SecretText','Any kind of secret text',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='SecretText');
+
+      		--system file types	   
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'SystemFileType','TemplateFile','FreeMarker Template file',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='TemplateFile');
+ 			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'SystemFileType','BashScript','Bash Shell Script',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='BashScript');     
+      		   
+      		--resource types
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'ResourceType','Host','Host/Machine',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='Host');
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'ResourceType','Http','Http/Https Endpoint',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='Http');
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'ResourceType','Db','Database',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='Db');
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'ResourceType','Msg','Messages Service',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='Msg');
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'ResourceType','TCP','TCP Connection',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='TCP');
+      		
+      		--verious type of statuses
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'ActionStatus','OK','Successful',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='OK');
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'ActionStatus','FL','Failed',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='FL');
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'ActionStatus','AB','Failed',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='AB');
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'ObjectStatus','N','New',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='N');
+			INSERT INTO ref_data_sys (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'ObjectStatus','D','Deprecated/Deleted',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_sys WHERE ref_code='D');
+      		   
+        </sql>
+	</changeSet>
+	<changeSet id="01.06" author="JogaSingh-Data" runOnChange="true">
+      	<sql>
+      		INSERT INTO ref_data_usr (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'HostOsType','Windows','Microsoft Windows',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_usr WHERE ref_code='Windows');
+      		INSERT INTO ref_data_usr (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'HostOsType','Linux','Linux Variants',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_usr WHERE ref_code='Linux');
+      		INSERT INTO ref_data_usr (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'HostLocation','OnPremise','On Premises',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_usr WHERE ref_code='OnPremise');
+      		INSERT INTO ref_data_usr (ref_type, ref_code, description, is_disabled)
+      		   SELECT 'BusProcess','HRApps','Human Resource Applications',0 FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM ref_data_usr WHERE ref_code='HRApps');      		   
+		</sql>
+	</changeSet>
+    <changeSet id="01.07" author="JogaSingh-Data" runOnChange="true">
+      	<sql>
+      		INSERT INTO cred_tree (node_id, name)
+      		   SELECT 'root','Root' FROM dual 
+      		   WHERE NOT EXISTS (SELECT * FROM cred_tree WHERE node_id='root');
+		</sql>
+	</changeSet>
+</databaseChangeLog>

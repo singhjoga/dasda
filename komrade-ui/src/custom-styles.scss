@@ -1,0 +1,92 @@
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 14px;
+}
+
+/* Table Structure */
+.datatable-container {
+  position: relative;
+  min-height: 200px;
+  width: 100%;
+}
+
+.datatable-table-container {
+  position: relative;
+  max-height: 400px;
+  overflow: auto;
+}
+
+table {
+  width: 98%;
+}
+
+.datatable-loading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 56px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-row-container-100 {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 1em 1em;
+  overflow-x: hidden;
+}
+
+.success-snackbar {
+  background-color: green;
+  color: #ffffff;
+  margin-top: 15% !important;
+}
+
+.error-snackbar {
+  background-color: red;
+  color: #ffffff;
+  margin-top: 15% !important;
+}
+
+.mat-column-name {
+  width: 20%;
+}
+
+.mat-column-firstName {
+  width: 10%;
+}
+
+.mat-column-lastName {
+  width: 10%;
+}
+
+.mat-column-email {
+  width: 10%;
+}
+
+.mat-column-isSystem {
+  width: 5%;
+}
+
+.mat-column-isDisabled {
+  width: 5%;
+}
+
+.mat-column-actions {
+  width: 5%;
+  text-align: center;
+
+  .mat-icon {
+    cursor: pointer;
+  }
+}

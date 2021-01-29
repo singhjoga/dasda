@@ -1,0 +1,51 @@
+$bgcolor: #4d7ed1
+$colorWhite: #ffffff
+$colorFontBlack: #000000
+
+.header
+  overflow: hidden
+  background-color: $bgcolor
+  padding: 20px 10px
+
+.header a
+  float: left
+  color: $colorWhite
+  text-align: center
+  padding: 12px
+  text-decoration: none
+  font-size: 18px
+  line-height: 25px
+  border-radius: 4px
+  margin-left: 5px
+
+  &.logo
+    font-size: 20px
+    font-weight: bold
+    color: $colorWhite
+
+  &:hover
+    background-color: $colorWhite
+    color: $bgcolor
+
+  &.active
+    background-color: $colorWhite
+    color: $bgcolor
+
+.header-right
+  float: right
+
+.ui-button
+  background-color: transparent
+  border: none
+  font-size: 20px
+  float: left
+  padding: 4px
+
+@media screen and (max-width: 500px)
+  .header a
+    float: none
+    display: block
+    text-align: left
+
+  .header-right
+    float: none

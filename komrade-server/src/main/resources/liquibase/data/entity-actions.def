@@ -1,0 +1,18 @@
+crud=view,add,update,delete
+
+system-setting:${crud}
+refdata:${crud}
+systemfile:${crud}
+credentials-tree:${crud},attach-role,detach-role
+credentials-entry:${crud},init-store,open-store,change-key
+role:${crud},attach-to-group,detach-from-group,attach-user,detach-user
+group: ${crud},attach-user,detach-user,attach-role,detach-role
+user:${crud},attach-to-group,detach-from-group,attach-to-role,detach-from-role
+team:${crud},attach-user,detach-user
+resource:${crud}
+component-type:${crud}
+environment:${crud}
+pipeline:${crud}
+global-variable:${crud}(environment)
+component:${crud}(component-type),deploy(environment,component-type),start,stop,undeploy,query-status,query-log,delete-instance
+release:${crud},deploy(environment,component-type),freeze,approve

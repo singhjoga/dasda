@@ -1,0 +1,55 @@
+{
+    "layout": {
+        "language": "Language"
+    },
+    "login": {
+        "title": "Login",
+        "panel-text": "Login",
+        "username": "Username",
+        "password": "Password",
+        "login-button": "Login"
+    },
+    "users": {
+        "user-form-title": "Create User",
+        "user-form-success": "User saved successfully"
+    },
+    "actions": {
+        "create": "Create",
+        "modify": "Edit",
+        "delete": "Delete",
+        "detail": "Detail",
+        "save": "Save",
+        "cancel": "Cancel",
+        "yes": "Yes",
+        "no": "No"
+    },
+    "columns": {
+        "name": "Name",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "isSystem": "System?",
+        "isDisabled": "Disabled?",
+        "actions": "Actions"
+    },
+    "form": {
+        "name": "Name",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "isSystem": "System?",
+        "isDisabled": "Disabled?",
+        "userName": "Username",
+        "password": "Password"
+    },
+    "Items per page:": "Items per page:",
+    "Next page": "Next page",
+    "Previous page": "Previous page",
+    "First page": "First page",
+    "Last page": "Last page",
+    "confirm": {
+        "confirm-message-create": "Are you sure to create?",
+        "confirm-message-update": "Are you sure to update?",
+        "confirm-message-delete": "Are you sure to delete?"
+    }
+}

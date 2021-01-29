@@ -1,0 +1,65 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+	<changeSet id="01.08" author="JogaSingh-Data" runOnChange="true">
+      <sql>
+
+      		DELETE FROM res_def;
+      		
+      		--hosts/machines
+      		INSERT INTO res_def (res_type_code, description, is_env_based)
+      		    VALUES ('HOST','Host Machine',1);
+      		    
+        	DELETE FROM res_def_prop;
+        	INSERT INTO res_def_prop(def_prop_id,display_order,is_env_based,res_type_code,name,display_name,description,type_code,select_values)
+        		VALUES(1,1,1,'HOST','hostname','Host Name',
+        		'Only the machine/host name part. Fully qualified name should entered in the other property','NAME',null);
+        	INSERT INTO res_def_prop(def_prop_id,display_order,is_env_based,res_type_code,name,display_name,description,type_code,select_values)
+        		VALUES(2,2,1,'HOST','os','Operating System','Machine Operation System',
+        		'SELECT_ONE','Linux,Windows');
+        	INSERT INTO res_def_prop(def_prop_id,display_order,is_env_based,res_type_code,name,display_name,description,type_code,select_values)
+        		VALUES(3,3,1,'HOST','location','Location',
+        		'Host/Machine Location','RefDataUser:HostLocation',null);
+        		
+        	INSERT INTO res_def_prop(def_prop_id,display_order,is_env_based,res_type_code,name,display_name,description,type_code,default_value)
+        		VALUES(4,4,1,'HOST','fqdn','Fully Qualified Domain Name'
+        		,'Fully Qualified Domain Name. Should also include the host name'
+        		,'NAME','${hostname}.${default.host.domain.suffix}');
+        	INSERT INTO res_def_prop(def_prop_id,display_order,is_env_based,res_type_code,name,display_name,description,type_code)
+        		VALUES(5,5,1,'HOST','ssh-credentials','SSH Credentials ID'
+        		,'SSH Credentials used to connect to this machine over SSH'	,'CredentialsId');
+        	INSERT INTO res_def_prop(def_prop_id,display_order,is_env_based,res_type_code,name,display_name,description,type_code,select_values,min_count,max_count)
+        		VALUES(6,6,1,'HOST','su-credentials','Switch User Credentials ID'
+        		,'Switch User (su) Credentials (if any) needed to perform any task on this machine','CredentialsId',null,0,1);
+        	INSERT INTO res_def_prop(def_prop_id,display_order,is_env_based,res_type_code,name,display_name,description,type_code,select_values,min_count,max_count)
+        		VALUES(7,7,1,'HOST','dns-alias','DNS Alias'
+        		,'DNS Aliases for the machine. Multiple aliases are entered multiple time, with different property names.These property names are then used in other places in the system'
+        		,'FQDN',null,0,10);
+
+			--http endpoints
+      		INSERT INTO res_def (res_type_code, description, is_env_based)
+      		    VALUES ('Http','Http Endpoint',1);
+
+        	INSERT INTO res_def_prop(def_prop_id,display_order,is_env_based,res_type_code,name,display_name,description,type_code)
+        		VALUES(20,1,1,'Http','url','Url','Http/Https Url','URL');
+        	INSERT INTO res_def_prop(def_prop_id,display_order,is_env_based,res_type_code,name,display_name,description,type_code,select_values,default_value)
+        		VALUES(21,2,1,'Http','auth-type','Authentication Type','Authentication type used to connect','SELECT_ONE','None,Basic,BearerToken','None');
+        	INSERT INTO res_def_prop(def_prop_id,display_order,is_env_based,res_type_code,name,display_name,description,type_code)
+        		VALUES(22,3,1,'Http','auth-credentials','Authentication Credentials Id'
+        		,'Credentials used to connect to this resource'	,'CredentialsId');
+        	INSERT INTO res_def_prop(def_prop_id,display_order,is_env_based,res_type_code,name,display_name,description,type_code,select_values,min_count,max_count)
+        		VALUES(23,4,1,'Http','host','Host'
+        		,'Machine on which this http endpoint hosted'
+        		,'HOST',null,0,1);
+
+			--databases
+      		INSERT INTO res_def (res_type_code, description, is_env_based)
+      		    VALUES ('DB','Database',1);
+      		    
+        	INSERT INTO res_def_prop(def_prop_id,display_order,is_env_based,res_type_code,name,display_name,description,type_code)
+        		VALUES(30,1,1,'DB','jdbc-url','JDBC Url','JDBC Url','URL');
+
+        </sql>
+	</changeSet>
+</databaseChangeLog>

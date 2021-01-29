@@ -1,0 +1,78 @@
+options:
+  scmRepository1: &scmrepo1
+     repositoryUrl: https://git.tech.rz.db.de/dbs-devops-solutions/applications/cmdb/cmdb-server.git
+     path:
+     ref: "branches/master"
+     provider: git
+     credentials:
+       username: jogagittoken
+       password: LTJQXU_ZDy8XR9fYEoom
+     checkoutPath: /  
+  scmRepository2: &scmrepo2
+     repositoryUrl: https://github.com/singhjoga/ssh-session.git
+     path:
+     provider: git
+     ref: "branches/master"
+     credentials:
+       username: singhjoga
+       password: letmeinto@148 
+     checkoutPath: /  
+  ssh: &localhost
+     host: "localhost"
+     username: "joga"
+     password: "joga123"
+  builder: &builder
+    image: harbois/builder:10
+    alias: builder
+    volumes:
+      - /root/.m2:/root/.m2
+    mounts:
+#      -
+    dependsOn:
+#      - 
+  docker-dind: &dind
+    image: docker:dind
+    alias: docker
+    privileged: true
+    volumes:
+      - /tmp/dockercerts:/certs
+    variables:
+      DOCKER_TLS_CERTDIR: /certs
+
+  docker: &docker
+    image: docker:stable
+    alias: docker-client
+    dependsOn:
+      - docker 
+    volumes:
+      - /tmp/dockercerts:/certs
+    variables:
+      DOCKER_TLS_VERIFY: '1'
+      DOCKER_CERT_PATH: /certs/client
+      DOCKER_HOST: tcp://docker:2376
+  variables:
+    aaaaa: abc
+    cccc: sss
+pipeline:
+  scm:
+    - repository: *scmrepo2
+  files:
+#    - {name: "aaa", targetFolder: "sss", extract: false}
+    - [settings.xml,/tmp/komrade,false]
+  parameters:
+  containers:
+    - *dind     
+  steps:
+   - name: "build"
+#     ssh: *localhost
+     container: *builder
+     scripts:
+       - mvn package  -s /tmp/komrade/settings.xml -DskipTests
+     artifacts:
+       - target/*.jar
+
+   - name: build-container
+     container: *docker
+     scripts:
+       - docker version
+       

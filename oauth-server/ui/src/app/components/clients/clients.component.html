@@ -1,0 +1,159 @@
+<p-progressBar mode="indeterminate" *ngIf='busy$ | async' [style]="{'height': '6px'}"></p-progressBar>
+
+<h3>Clients List</h3>
+
+<div class="div-table-actions">
+  <button type="button" pButton icon="pi pi-plus" (click)="showDialogToAdd()" label="Add"></button>
+</div>
+
+<p-menu #menu [popup]="true" [model]="items"></p-menu>
+<p-table [value]="clientsData$ | async" [paginator]="true" [rows]="ITEMS_PER_PAGE">
+  <ng-template pTemplate="header">
+    <tr>
+      <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+        {{col.header}}
+        <p-sortIcon [field]="col.field" ariaLabel="Activate to sort"
+          ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order">
+        </p-sortIcon>
+      </th>
+      <th class="table-action-column"></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-client>
+    <tr>
+      <td>{{ client.clientId }}</td>
+      <td>{{ client.scopes }}</td>
+      <td>{{ client.grantTypes }}</td>
+      <td>{{ client.roles }}</td>
+      <td>{{ client.accessTokenValidityMs }}</td>
+      <td>{{ client.refreshTokenValidityMs }}</td>
+      <td style="text-align:center">
+        <i class="pi pi-ellipsis-v" pTooltip="Actions" tooltipPosition="top"
+          (click)="menu.toggle($event); onClientsActionsMenu(client)"></i>
+      </td>
+    </tr>
+  </ng-template>
+
+</p-table>
+
+
+<p-dialog header="Client" [(visible)]="showDialog" [style]="{width: WIDTH, minWidth: WIDTH}" [maximizable]="true"
+  modal="modal" appendTo="body" (onHide)="onDialogHide()">
+  <form [formGroup]="clientForm">
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 10px 0px">
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Client ID *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_CLIENT_ID" placeholder="Client ID" required
+            [attr.disabled]="!isNewClient ? '' : null" />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!clientForm.controls[FORM_CLIENT_ID].valid&&clientForm.controls[FORM_CLIENT_ID].dirty"></p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Client Secret *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_SECRET" placeholder="Secret"
+            [attr.disabled]="!isNewClient ? '' : null" required />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!clientForm.controls[FORM_SECRET].valid&&clientForm.controls[FORM_SECRET].dirty"></p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Scope *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_SCOPES" placeholder="Scope" required />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!clientForm.controls[FORM_SCOPES].valid&&clientForm.controls[FORM_SCOPES].dirty"></p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Grants *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_GRANT_TYPES" placeholder="Grants" required />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!clientForm.controls[FORM_GRANT_TYPES].valid&&clientForm.controls[FORM_GRANT_TYPES].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Roles *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_ROLES" placeholder="Roles" required />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!clientForm.controls[FORM_ROLES].valid&&clientForm.controls[FORM_ROLES].dirty"></p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Access Token Validity *:
+        </div>
+        <div class="ui-grid-col-6">
+          <div class="ui-inputgroup">
+            <input type="number" min="0" pInputText [formControlName]="FORM_ACCESS_VALIDITY"
+              placeholder="Access Token Validity" placeholder="Access Token Validity" required />
+            <span class="ui-inputgroup-addon">ms</span>
+          </div>
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!clientForm.controls[FORM_ACCESS_VALIDITY].valid&&clientForm.controls[FORM_ACCESS_VALIDITY].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Refresh Token Validity *:
+        </div>
+        <div class="ui-grid-col-6">
+          <div class="ui-inputgroup">
+            <input type="number" min="0" pInputText [formControlName]="FORM_REFRESH_VALIDITY"
+              placeholder="Refresh Token Validity" placeholder="Refresh Token Validity" required />
+            <span class="ui-inputgroup-addon">ms</span>
+          </div>
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!clientForm.controls[FORM_REFRESH_VALIDITY].valid&&clientForm.controls[FORM_REFRESH_VALIDITY].dirty">
+          </p-message>
+        </div>
+      </div>
+    </div>
+
+    <p-footer>
+      <button type="submit" pButton icon="pi pi-pencil" label="Save" (click)="save()"
+        [disabled]="!clientForm.valid"></button>
+      <button type="reset" pButton icon="pi pi-times" (click)="showDialog=false" label="Cancel"
+        class="ui-button-secondary"></button>
+    </p-footer>
+  </form>
+</p-dialog>
+
+
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle" appendTo="body"></p-confirmDialog>

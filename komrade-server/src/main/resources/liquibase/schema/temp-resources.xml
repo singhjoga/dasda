@@ -1,0 +1,129 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+	<changeSet id="01.23" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="RES_DEF" />
+			</not>
+		</preConditions>
+		<createTable tableName="RES_DEF">
+            <column name="RES_TYPE_CODE" type="VARCHAR2(20 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="RES_DEF_PK"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR2(1000 BYTE)"/>
+            <column name="IS_DISABLED" type="BOOLEAN" defaultValueBoolean="false"/>
+            <column name="IS_ENV_BASED" type="BOOLEAN"/>
+        </createTable>        
+	</changeSet>
+
+	<changeSet id="01.24" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="RES_DEF_PROP" />
+			</not>
+		</preConditions>
+		<createTable tableName="RES_DEF_PROP">
+			<column name="DEF_PROP_ID" type="LONG">
+            	<constraints primaryKey="true" primaryKeyName="RES_DEF_PROP_PK"/>
+			</column>		
+		    <column name="RES_TYPE_CODE" type="VARCHAR2(20 BYTE)"/>
+            <column name="NAME" type="VARCHAR2(500 BYTE)"/>
+            <column name="DISPLAY_NAME" type="VARCHAR2(500 BYTE)"/>
+            <column name="DESCRIPTION" type="VARCHAR2(1000 BYTE)"/>
+         	<column name="TYPE_CODE" type="VARCHAR2(50 BYTE)"/>            
+            <column name="SELECT_VALUES" type="VARCHAR2(3000 BYTE)"/>
+            <column name="MIN_COUNT" type="INT" defaultValueNumeric="1"/>
+            <column name="MAX_COUNT" type="INT" defaultValueNumeric="1"/>
+            <column name="DISPLAY_ORDER" type="FLOAT"/>
+            <column name="IS_ENV_BASED" type="BOOLEAN"/>
+            <column name="DEFAULT_VALUE" type="VARCHAR2(3000 BYTE)"/>
+        </createTable>
+	</changeSet>
+	<changeSet id="01.25" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="RES" />
+			</not>
+		</preConditions>
+		<createTable tableName="RES">
+			<column name="RES_ID" type="VARCHAR(50 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="RES_PK"/>
+			</column>
+			<column name="NAME" type="VARCHAR2(100 BYTE)">
+				<constraints unique="true" uniqueConstraintName="RES_NAME_UK"/>
+			</column>
+            <column name="RES_TYPE_CODE" type="VARCHAR2(20 BYTE)">
+            	<constraints  foreignKeyName="RES_FK1" references="res_def(res_type_code)"/>
+            </column>
+            <column name="TEAM_CODE" type="VARCHAR2(10 BYTE)">
+            	<constraints  foreignKeyName="RES_FK2" references="prj_team(team_code)"/>
+            </column>            
+            <column name="DOMAIN_CODE" type="VARCHAR2(20 BYTE)">
+            	<constraints  foreignKeyName="RES_FK3" references="ref_data_usr(ref_code)"/>
+            </column>            
+            <column name="DESCRIPTION" type="VARCHAR2(1000 BYTE)"/>
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />    
+        </createTable> 
+              
+	</changeSet>
+
+	<changeSet id="01.26" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="RES_PROP" />
+			</not>
+		</preConditions>
+		<createTable tableName="RES_PROP">
+			<column name="RES_PROP_ID" type="VARCHAR(50 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="RES_PROP_PK"/>
+			</column>
+    		 <column name="RES_ID" type="BIGINT">
+            	<constraints  foreignKeyName="RES_PROP_FK1" references="res(res_id)"/>
+            </column>
+    		 <column name="DEF_PROP_ID" type="LONG">
+            	<constraints  foreignKeyName="RES_PROP_FK2" references="res_def_prop(def_prop_id)"/>
+            </column>
+            <column name="NAME" type="VARCHAR2(500 BYTE)"/>
+        </createTable>
+		<createIndex indexName="RES_PROP__UK1" tableName="RES_PROP" unique="true">
+			<column name="RES_ID" />
+			<column name="NAME" />
+		</createIndex>     
+		<createIndex indexName="IDX1_RES_PROP" tableName="RES_PROP" unique="false">
+			<column name="RES_ID" />
+		</createIndex>		  
+        
+	</changeSet>
+	<changeSet id="01.27" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="RES_PROP_VAL" />
+			</not>
+		</preConditions>
+		<createTable tableName="RES_PROP_VAL">
+            <column name="RES_PROP_VAL_ID" type="VARCHAR(50 BYTE)">
+                <constraints primaryKey="true" primaryKeyName="RES_PROP_VAL_PK"/>
+            </column>
+			<column name="RES_PROP_ID" type="VARCHAR(50 BYTE)">
+				<constraints foreignKeyName="RES_PROP_VAL_FK1" references="RES_PROP(RES_PROP_ID)"/>				
+			</column>            
+            <column name="ENV_CODE" type="VARCHAR2(20 BYTE)">
+            	<constraints nullable="true"/>
+            </column>
+            <column name="VALUE" type="VARCHAR2(4000 BYTE)"/>
+        </createTable>
+        
+		<createIndex indexName="RES_PROP_VAL_UK1" tableName="RES_PROP_VAL" unique="true">
+			<column name="RES_PROP_ID" />
+			<column name="ENV_CODE" />
+		</createIndex>
+		<createIndex indexName="IDX1_RES_PROP_VAL" tableName="RES_PROP_VAL" unique="false">
+			<column name="RES_PROP_ID" />
+		</createIndex>
+	</changeSet>
+</databaseChangeLog>

@@ -1,0 +1,8 @@
+{
+  "whenUserNotFound": "Continue",
+  "whenRolesNotFound": "Continue",
+  "whenRolesFound": "Continue",
+  "returnAuthorityType": "Roles",
+  "canAuthenticate": true,
+  "canAuthorize": true
+}

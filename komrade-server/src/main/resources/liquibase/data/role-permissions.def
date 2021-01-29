@@ -1,0 +1,11 @@
+dev-environments=DEV*,INT*,WRT*
+dev_actions=add,update,delete,deploy
+dev-team-entities=component,global-variable
+rel-team-entities=component,global-variable,release
+rel-coordinator-entities=component,global-variable,release
+
+SystemAdministrator:*,!component,!release:*
+DevelopmentTeam:${dev-team-entities}:${dev_actions}(environment=${dev-environments}),view(environment=*)
+ReleaseManagement:${rel-team-entities}:*(environment=!${dev-environments})
+ReleaseCoordinator:${rel-coordinator-entities}:*(environment=${dev-environments})
+Reader:*:view

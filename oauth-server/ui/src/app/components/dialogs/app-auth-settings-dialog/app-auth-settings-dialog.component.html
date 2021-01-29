@@ -1,0 +1,553 @@
+<form [formGroup]="providerForm">
+  <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 10px 0px">
+
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        Display Order *:
+      </div>
+      <div class="ui-grid-col-6">
+        <input type="number" pInputText [formControlName]="FORM_DISPLAY_ORDER" placeholder="Display Order" required />
+      </div>
+      <div class="ui-grid-col-4">
+        <p-message severity="error" text="Required"
+          *ngIf="!providerForm.controls[FORM_DISPLAY_ORDER].valid&&providerForm.controls[FORM_DISPLAY_ORDER].dirty">
+        </p-message>
+      </div>
+    </div>
+
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        Name *:
+      </div>
+      <div class="ui-grid-col-6">
+        <input type="text" pInputText [formControlName]="FORM_NAME" placeholder="Name" required />
+      </div>
+      <div class="ui-grid-col-4">
+        <p-message severity="error" text="Required"
+          *ngIf="!providerForm.controls[FORM_NAME].valid&&providerForm.controls[FORM_NAME].dirty"></p-message>
+      </div>
+    </div>
+
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        Description *:
+      </div>
+      <div class="ui-grid-col-6">
+        <input type="text" pInputText [formControlName]="FORM_DESCRIPTION" placeholder="Description" required />
+      </div>
+      <div class="ui-grid-col-4">
+        <p-message severity="error" text="Required"
+          *ngIf="!providerForm.controls[FORM_DESCRIPTION].valid&&providerForm.controls[FORM_DESCRIPTION].dirty">
+        </p-message>
+      </div>
+    </div>
+
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        Provider Type *:
+      </div>
+      <div class="ui-grid-col-6">
+        <p-dropdown [options]="providerTypes" [formControlName]="FORM_PROVIDER_TYPE"
+          (onChange)="onProviderTypeChanged()"></p-dropdown>
+      </div>
+      <div class="ui-grid-col-4">
+        <p-message severity="error" text="Required"
+          *ngIf="!providerForm.controls[FORM_DESCRIPTION].valid&&providerForm.controls[FORM_DESCRIPTION].dirty">
+        </p-message>
+      </div>
+    </div>
+
+    <hr *ngIf="getProviderType()" />
+
+    <!-- FOR INTERNAL DATABASE -->
+    <div *ngIf="getProviderType() === PROVIDER_INTERNAL_DATABASE">
+      <div class="ui-grid-row">
+        <h4>Internal Database Options</h4>
+      </div>
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Type of authoritis to return *:
+        </div>
+        <div class="ui-grid-col-6">
+          <div class="ui-g">
+            <div class="ui-g-12">
+              <p-radioButton name="authoritiestype" value="Roles" label="Roles"
+                [formControlName]="FORM_AUTHORITIES_TYPE"></p-radioButton>
+            </div>
+            <div class="ui-g-12">
+              <p-radioButton name="authoritiestype" value="Groups" label="Groups"
+                [formControlName]="FORM_AUTHORITIES_TYPE"></p-radioButton>
+            </div>
+            <div class="ui-g-12">
+              <p-radioButton name="authoritiestype" value="Permissions" label="Permissions"
+                [formControlName]="FORM_AUTHORITIES_TYPE" disabled="true"></p-radioButton>
+            </div>
+          </div>
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_AUTHORITIES_TYPE].valid&&providerForm.controls[FORM_AUTHORITIES_TYPE].dirty">
+          </p-message>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORM EXTERNAL DATABASE -->
+    <div *ngIf="getProviderType() === PROVIDER_EXERNAL_DATABASE">
+      <div class="ui-grid-row">
+        <h4>External Database Options</h4>
+      </div>
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Driver Class *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_DRIVER_CLASS" placeholder="Driver Class" required />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_DRIVER_CLASS].valid&&providerForm.controls[FORM_DRIVER_CLASS].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          JDBC Url *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_JBDC_URL" placeholder="JDBC Url" required />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_JBDC_URL].valid&&providerForm.controls[FORM_JBDC_URL].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Username *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_USERNAME" placeholder="Username" required />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_USERNAME].valid&&providerForm.controls[FORM_USERNAME].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Password *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="password" pInputText [formControlName]="FORM_PASSWORD" placeholder="Password" required
+            pPassword />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_PASSWORD].valid&&providerForm.controls[FORM_PASSWORD].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Authentication SQL *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_AUTHENTICATE_SQL" placeholder="Authentication  SQL"
+            required [disabled]="!canAuthenticate()" />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_AUTHENTICATE_SQL].valid&&providerForm.controls[FORM_AUTHENTICATE_SQL].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Password Encoder *:
+        </div>
+        <div class="ui-grid-col-6">
+          <p-dropdown [options]="passwordEncoders" [formControlName]="FORM_PASSWORD_ENCODER_SETTING"
+            (onChange)="onPasswordEncoderChanged()"></p-dropdown>
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_PASSWORD_ENCODER_SETTING].valid&&providerForm.controls[FORM_PASSWORD_ENCODER_SETTING].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Authoriaztion SQL *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_AUTHORIZE_SQL" placeholder="Authoriaztion  SQL" required
+            [disabled]="!canAuthorize()" />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_AUTHORIZE_SQL].valid&&providerForm.controls[FORM_AUTHORIZE_SQL].dirty">
+          </p-message>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOR ACTIVE DIRECTORY -->
+    <div *ngIf="getProviderType() === PROVIDER_ACTIVE_DIRECTORY">
+      <div class="ui-grid-row">
+        <h4>Active Directory Options</h4>
+      </div>
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          LDAP Url *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_LDAP_URL" placeholder="LDAP URL" required />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_LDAP_URL].valid&&providerForm.controls[FORM_LDAP_URL].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Domain Name *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_DOMAIN_NAME" placeholder="Domain Name" required />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_DOMAIN_NAME].valid&&providerForm.controls[FORM_DOMAIN_NAME].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Search Base *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_SEARCH_BASE" placeholder="Search Base" required />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_SEARCH_BASE].valid&&providerForm.controls[FORM_SEARCH_BASE].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Search Filter *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_SEARCH_FILTER" placeholder="Search Filter" required />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_SEARCH_FILTER].valid&&providerForm.controls[FORM_SEARCH_FILTER].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Manager DN *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_MANAGER_DN" placeholder="Manager DN" required />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_MANAGER_DN].valid&&providerForm.controls[FORM_MANAGER_DN].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Manager Password *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_MANAGER_PASSWORD" placeholder="Manager Password"
+            required pPassword />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_MANAGER_PASSWORD].valid&&providerForm.controls[FORM_MANAGER_PASSWORD].dirty">
+          </p-message>
+        </div>
+      </div>
+    </div>
+    <!-- FOR LDAP -->
+    <div *ngIf="getProviderType() === PROVIDER_LDAP">
+      <div class="ui-grid-row">
+        <h4>LDAP Options</h4>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          LDAP Url *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_LDAP_URL" placeholder="LDAP URL" required />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_LDAP_URL].valid&&providerForm.controls[FORM_LDAP_URL].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          User DN Pattern *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_USER_DN_PATTERN" placeholder="User DN Pattern"
+            required />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_USER_DN_PATTERN].valid&&providerForm.controls[FORM_USER_DN_PATTERN].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          User Search Base *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_USER_SEARCH_BASE" placeholder="User Search Base"
+            required />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_USER_SEARCH_BASE].valid&&providerForm.controls[FORM_USER_SEARCH_BASE].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          User Search Filter *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_USER_SEARCH_FILTER" placeholder="User Search Filter"
+            required />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_USER_SEARCH_FILTER].valid&&providerForm.controls[FORM_USER_SEARCH_FILTER].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Group Search Base *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_GROUP_SEARCH_BASE" placeholder="Group Search Base"
+            required />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_GROUP_SEARCH_BASE].valid&&providerForm.controls[FORM_GROUP_SEARCH_BASE].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Group Search Filter *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_GROUP_SEARCH_FILTER" placeholder="Group Search Filter"
+            required />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_GROUP_SEARCH_FILTER].valid&&providerForm.controls[FORM_GROUP_SEARCH_FILTER].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Group Role Attribute *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_GROUP_ROLE_ATTRIBUTE" placeholder="Group Role Attribute"
+            required />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_GROUP_ROLE_ATTRIBUTE].valid&&providerForm.controls[FORM_GROUP_ROLE_ATTRIBUTE].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Manager DN *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_MANAGER_DN" placeholder="Manager DN" required />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_MANAGER_DN].valid&&providerForm.controls[FORM_MANAGER_DN].dirty">
+          </p-message>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-4">
+          Manager Password *:
+        </div>
+        <div class="ui-grid-col-6">
+          <input type="text" pInputText [formControlName]="FORM_MANAGER_PASSWORD" placeholder="Manager Password"
+            required pPassword />
+        </div>
+        <div class="ui-grid-col-4">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_MANAGER_PASSWORD].valid&&providerForm.controls[FORM_MANAGER_PASSWORD].dirty">
+          </p-message>
+        </div>
+      </div>
+    </div>
+
+
+    <hr />
+
+    <div class="ui-grid-row">
+
+
+      <div class="ui-g-6">
+        <div class="ui-grid-col-6">
+          Can Authenticate *:
+        </div>
+        <div class="ui-grid-col-6">
+          <p-checkbox binary="false" [formControlName]="FORM_CAN_AUTHENTICATE"></p-checkbox>
+        </div>
+        <div class="ui-grid-col-6">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_CAN_AUTHENTICATE].valid&&providerForm.controls[FORM_CAN_AUTHENTICATE].dirty">
+          </p-message>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-grid-col-6">
+          Can Authorize *:
+        </div>
+        <div class="ui-grid-col-6">
+          <p-checkbox binary="false" [formControlName]="FORM_CAN_AUTHORIZE"></p-checkbox>
+        </div>
+        <div class="ui-grid-col-6">
+          <p-message severity="error" text="Required"
+            *ngIf="!providerForm.controls[FORM_CAN_AUTHORIZE].valid&&providerForm.controls[FORM_CAN_AUTHORIZE].dirty">
+          </p-message>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        When user not found *:
+      </div>
+      <div class="ui-grid-col-6">
+        <div class="ui-g">
+          <div class="ui-g-12">
+            <p-radioButton name="nouserfound" value="Continue" label="Continue to next provider"
+              [formControlName]="FORM_USER_NOT_FOUND"></p-radioButton>
+          </div>
+          <div class="ui-g-12">
+            <p-radioButton name="nouserfound" value="Failure" label="Return Failure"
+              [formControlName]="FORM_USER_NOT_FOUND"></p-radioButton>
+          </div>
+        </div>
+      </div>
+      <div class="ui-grid-col-4">
+        <p-message severity="error" text="Required"
+          *ngIf="!providerForm.controls[FORM_USER_NOT_FOUND].valid&&providerForm.controls[FORM_USER_NOT_FOUND].dirty">
+        </p-message>
+      </div>
+    </div>
+
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        When roles not found *:
+      </div>
+      <div class="ui-grid-col-6">
+        <div class="ui-g">
+          <div class="ui-g-12">
+            <p-radioButton name="norolesfound" value="Continue" label="Continue to next provider"
+              [formControlName]="FORM_ROLES_FOUND"></p-radioButton>
+          </div>
+          <div class="ui-g-12">
+            <p-radioButton name="norolesfound" value="Failure" label="Return Failure"
+              [formControlName]="FORM_ROLES_FOUND"></p-radioButton>
+          </div>
+          <div class="ui-g-12">
+            <p-radioButton name="norolesfound" value="Success" label="Return Success"
+              [formControlName]="FORM_ROLES_FOUND"></p-radioButton>
+          </div>
+        </div>
+      </div>
+      <div class="ui-grid-col-4">
+        <p-message severity="error" text="Required"
+          *ngIf="!providerForm.controls[FORM_ROLES_NOT_FOUND].valid&&providerForm.controls[FORM_ROLES_NOT_FOUND].dirty">
+        </p-message>
+      </div>
+    </div>
+
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-4">
+        When roles found *:
+      </div>
+      <div class="ui-grid-col-6">
+        <div class="ui-g">
+          <div class="ui-g-12">
+            <p-radioButton name="rolesfound" value="Continue" label="Continue to next provider"
+              [formControlName]="FORM_ROLES_FOUND"></p-radioButton>
+          </div>
+          <div class="ui-g-12">
+            <p-radioButton name="rolesfound" value="Failure" label="Return Failure"
+              [formControlName]="FORM_ROLES_FOUND"></p-radioButton>
+          </div>
+        </div>
+      </div>
+      <div class="ui-grid-col-4">
+        <p-message severity="error" text="Required"
+          *ngIf="!providerForm.controls[FORM_ROLES_FOUND].valid&&providerForm.controls[FORM_ROLES_FOUND].dirty">
+        </p-message>
+      </div>
+    </div>
+
+  </div>
+
+
+
+</form>
+
+<div class="footer-actions">
+  <button type="submit" pButton icon="pi pi-pencil" label="Save" (click)="save()"
+    [disabled]="!providerForm.valid"></button>
+  <button type="reset" pButton icon="pi pi-times" (click)="ref.close(null)" label="Cancel"
+    class="ui-button-secondary"></button>
+</div>

@@ -1,0 +1,15 @@
+<div class="header">
+  <div class="menu">
+    <button #btn type="button" pButton icon="pi pi-bars" (click)="menu.toggle($event)"
+      *ngIf="loginService.isAuthenticated()"></button>
+    <a class="logo" (click)="goToHome()">HARBOIS OAuth2 Server</a>
+    <p-tieredMenu #menu [model]="items" [popup]="true"></p-tieredMenu>
+  </div>
+
+
+  <div class="header-right">
+    <!-- <a class="active" href="#home">Home</a>
+    <a href="#contact">Contact</a> -->
+    <a (click)="callLogout()" *ngIf="loginService.isAuthenticated()">Logout</a>
+  </div>
+</div>

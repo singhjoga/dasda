@@ -1,0 +1,51 @@
+<div class="layout-container">
+  <!--Header-->
+  <mat-toolbar color="primary" class="layout-toolbar">
+    <div class="flex-row-container-100">
+      <div class="header-left">
+        <div [hidden]="!isAuthenticated()">
+          <button mat-icon-button (click)="snav.toggle()">
+            <mat-icon>menu</mat-icon>
+          </button>
+        </div>
+        <h1 class="layout-app-name">Komrade</h1>
+        <!-- <img src="../../../assets/images/logo.png" class="logo" alt=""> -->
+      </div>
+
+      <div class="header-right">
+        <mat-form-field>
+          <mat-label>{{ 'layout.language' | translate }}</mat-label>
+          <mat-select (selectionChange)="changeLanguge($event)" [(ngModel)]="locale">
+            <mat-option value="en">EN</mat-option>
+            <mat-option value="de">DE</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+    </div>
+  </mat-toolbar>
+
+  <!--Sidebar-->
+  <mat-sidenav-container class="layout-sidenav-container">
+    <mat-sidenav #snav mode="over" fixedTopGap="56">
+      <mat-expansion-panel *ngIf="isAuthenticated()">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <h4>Administration</h4>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+          <a mat-list-item *ngIf="isUserPermitted()" (click)="goToUsers()">Users</a>
+          <a mat-list-item *ngIf="isRolePermitted()" (click)="goToRoles()">Roles</a>
+          <a mat-list-item *ngIf="isClientPermitted()" (click)="goToClients()">Clients</a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+
+    </mat-sidenav>
+
+    <!--Content for all the other pages-->
+    <mat-sidenav-content>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

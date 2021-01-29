@@ -1,0 +1,74 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+	<changeSet author="JogaSingh-Data" id="01.01">
+		<sql>
+			INSERT INTO
+			oauth_client_details (client_id,client_secret,resource_ids,	scope,authorized_grant_types,authorities,
+			access_token_validity,refresh_token_validity)
+			VALUES ('oauth-server','$2a$10$05uMnmpMsnfTWhSiGOE7GuoxwEIqlDzQYMK6a3r9VSrgWLRRXO/La','oauth-api',
+			'read,write','check_token,refresh_token,password','ROLE_ALL',25000,250000);
+			
+			INSERT INTO
+			oauth_client_details (client_id,client_secret,resource_ids,	scope,authorized_grant_types,authorities,
+			access_token_validity,refresh_token_validity)
+			VALUES ('default-app','$2a$10$XUMhH02UmTa1CYonoelT4udo01T4H8iT/goOVOWqxboXSspkJy9ri','default-app',
+			'read,write','check_token,refresh_token,password','ROLE_ALL',25000,250000);
+		</sql>
+		<sql>
+			INSERT INTO
+			user (username,password,is_system,first_name,last_name,email)
+			VALUES ('admin','$2a$10$05uMnmpMsnfTWhSiGOE7GuoxwEIqlDzQYMK6a3r9VSrgWLRRXO/La', true,'System','Administrator',null);
+			
+			INSERT INTO
+			user (username,password,is_system,first_name,last_name,email)
+			VALUES ('default-user','$2a$10$uEZxMphR8rKjyL3sDwyjF.akXihojL20vBbD9CeFg30eOKaZHQxF6', false,'Default','User',null);
+			
+		</sql>
+		<sql>
+			INSERT INTO user_role (user_role_id,name,description,is_system,client_id)
+			VALUES (1,'SystemAdministrator','Role allowing all admin functions in the system', true,'global');
+			
+			INSERT INTO user_role (user_role_id,name,description,is_system,client_id)
+			VALUES (2,'ClientAdministrator','Role allowing all admin functions of one client', true,'global');
+
+			INSERT INTO user_role (user_role_id,name,description,is_system,client_id)
+			VALUES (3,'UserManager','Role allowing to manage users', true,'global');
+
+			INSERT INTO user_role (user_role_id,name,description,is_system,client_id)
+			VALUES (4,'Reader','Read access to data using API', true,'global');
+			
+			INSERT INTO user_role (user_role_id,name,description,is_system,client_id)
+			VALUES (90,'DefaultAppAdmin','Administrator role for default app', false,'default-app');
+			
+			INSERT INTO user_group (user_group_id,name,description,is_system,client_id)
+			VALUES (1,'SystemAdministrators','Group with all users having SystemAdministrator role', true,'global');
+
+			INSERT INTO user_group (user_group_id,name,description,is_system,client_id)
+			VALUES (2,'UserManagers','Group with all users having UserManager role', true,'global');
+
+			INSERT INTO user_group (user_group_id,name,description,is_system,client_id)
+			VALUES (90,'DefaultAppAdministrators','Group with all users having Administrator role for Default App', false,'default-app');
+
+			INSERT INTO user_group_role (user_group_id, user_role_id) VALUES (1,1);
+			INSERT INTO user_group_role (user_group_id, user_role_id) VALUES (2,3);
+			INSERT INTO user_group_role (user_group_id, user_role_id) VALUES (90,90);
+			INSERT INTO user_group_user (user_group_id, username) VALUES (1,'admin');
+			INSERT INTO user_group_user (user_group_id, username) VALUES (2,'admin');
+			INSERT INTO user_group_user (user_group_id, username) VALUES (90,'default-user');
+		</sql>
+
+	</changeSet>
+	<changeSet author="JogaSingh-Data" id="01.02">
+		<insert tableName="APP_AUTH_SETTING">
+        	<column name="SETTINGS_ID" valueNumeric="1"/>
+        	<column name="DISPLAY_ORDER" valueNumeric="1"/>
+        	<column name="NAME" value="Internal Users"/>
+			<column name="PROVIDER_TYPE" value="InternalDatabase"/>
+			<column name="CLIENT_ID" value="global"/>     	
+        	<column name="DESCRIPTION" value="It uses the internal database for authentication and authorization"/>
+        	<column name="SETTINGS_JSON" valueClobFile="internaldb-settings.json"/>
+    	</insert>
+    </changeSet>
+</databaseChangeLog>

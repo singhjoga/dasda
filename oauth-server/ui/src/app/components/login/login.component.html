@@ -1,0 +1,41 @@
+<div class="ui-g">
+  <div class="ui-lg-12 ui-md-12 ui-sm-12 center-login">
+    <p-card>
+      <p-header>
+        <h2>Login</h2>
+      </p-header>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="ui-g ui-fluid">
+
+          <div class="form-ui-control">
+            <div class="ui-inputgroup">
+              <input type="text" pInputText formControlName="username" placeholder="Username"
+                [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+            </div>
+          </div>
+
+          <div class="form-ui-control">
+            <div class="ui-inputgroup">
+              <input type="password" pInputText formControlName="password" placeholder="Password"
+                [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+            </div>
+          </div>
+
+          <div class="form-ui-control">
+            <div class="ui-inputgroup">
+              <p-button [disabled]="loading || !loginForm.valid" label="Login"></p-button>
+            </div>
+          </div>
+
+        </div>
+      </form>
+
+      <p-footer>
+        <p-progressSpinner [style]="{width: '50px', height: '50px'}" strokeWidth="8" fill="#EEEEEE"
+          animationDuration=".5s" *ngIf="loading"></p-progressSpinner>
+      </p-footer>
+    </p-card>
+
+  </div>
+</div>

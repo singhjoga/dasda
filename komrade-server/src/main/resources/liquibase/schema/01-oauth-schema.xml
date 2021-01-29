@@ -1,0 +1,1044 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+	<changeSet author="JogaSingh" id="01.01">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="oauth_client_details" />
+			</not>
+		</preConditions>
+		<createTable tableName="oauth_client_details">
+			<column name="client_id" type="VARCHAR2(256 BYTE)">
+				<constraints primaryKey="true" primaryKeyName="oauth_client_details_PK" />
+			</column>
+			<column name="resource_ids" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+			<column name="client_secret" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+			<column name="scope" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+			<column name="authorized_grant_types" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+			<column name="web_server_redirect_uri" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+			<column name="authorities" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+			<column name="access_token_validity" type="int" />
+			<column name="refresh_token_validity" type="int" />
+			<column name="additional_information" type="VARCHAR2(3000 BYTE)">
+				<constraints nullable="true" />
+			</column>
+			<column name="autoapprove" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="JogaSingh" id="01.02">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="oauth_access_token" />
+			</not>
+		</preConditions>
+		<createTable tableName="oauth_access_token">
+			<column name="authentication_id" type="VARCHAR2(256 BYTE)">
+				<constraints primaryKey="true" primaryKeyName="oauth_access_token_PK" />
+			</column>
+			<column name="token_id" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+			<column name="token" type="BLOB" />
+			<column name="user_name" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+			<column name="client_id" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+			<column name="authentication" type="BLOB" />
+			<column name="refresh_token" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="JogaSingh" id="01.03">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="oauth_refresh_token" />
+			</not>
+		</preConditions>
+		<createTable tableName="oauth_refresh_token">
+			<column name="token_id" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+
+			<column name="token" type="BLOB" />
+			<column name="authentication" type="BLOB" />
+		</createTable>
+	</changeSet>
+	<changeSet author="JogaSingh" id="01.04">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="user" />
+			</not>
+		</preConditions>
+		<createTable tableName="user">
+			<column name="username" type="VARCHAR2(50 BYTE)">
+				<constraints primaryKey="true" primaryKeyName="user_pk" />
+			</column>
+			<column name="password" type="VARCHAR2(3000 BYTE)" />
+			<column name="first_name" type="VARCHAR2(3006 BYTE)" />
+			<column name="last_name" type="VARCHAR2(300 BYTE)" />
+			<column name="email" type="VARCHAR2(300 BYTE)" />
+			<column name="is_system" type="BOOLEAN" defaultValueBoolean="false" />
+			<column name="is_disabled" type="BOOLEAN" defaultValueBoolean="false" />
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />
+		</createTable>
+	</changeSet>
+
+	<changeSet id="01.05" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="user_group" />
+			</not>
+		</preConditions>
+		<createTable tableName="user_group">
+			<column name="user_group_id" type="BIGINT">
+				<constraints primaryKey="true" primaryKeyName="user_group_pk" />
+			</column>
+			<column name="name" type="VARCHAR2(100 BYTE)" />
+			<column name="description" type="VARCHAR2(1000 BYTE)" />
+			<column name="is_system" type="BOOLEAN" />
+			<column name="is_disabled" type="BOOLEAN" defaultValueBoolean="false" />
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />
+			<column name="client_id" type="VARCHAR2(256 BYTE)" />				
+		</createTable>
+
+		<createIndex indexName="user_group_uk1" tableName="user_group"
+			unique="true">
+			<column name="name" />
+		</createIndex>
+	</changeSet>
+
+	<changeSet id="01.06" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="user_role" />
+			</not>
+		</preConditions>
+		<createTable tableName="user_role">
+			<column name="user_role_id" type="BIGINT">
+				<constraints primaryKey="true" primaryKeyName="user_role_pk" />
+			</column>
+			<column name="name" type="VARCHAR2(100 BYTE)" />
+			<column name="description" type="VARCHAR2(1000 BYTE)" />
+			<column name="is_system" type="BOOLEAN" />
+			<column name="is_disabled" type="BOOLEAN" defaultValueBoolean="false" />
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />
+			<column name="client_id" type="VARCHAR2(256 BYTE)" />				
+		</createTable>
+
+		<createIndex indexName="user_role_uk1" tableName="user_role"
+			unique="true">
+			<column name="name" />
+		</createIndex>
+	</changeSet>
+	<changeSet id="01.07" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="user_group_role" />
+			</not>
+		</preConditions>
+		<createTable tableName="user_group_role">
+			<column name="user_group_id" type="BIGINT">
+				<constraints primaryKey="true" primaryKeyName="user_group_role_pk" />
+			</column>
+			<column name="user_role_id" type="BIGINT">
+				<constraints primaryKey="true" primaryKeyName="user_group_role_pk" />
+			</column>
+		</createTable>
+		<addForeignKeyConstraint baseColumnNames="user_role_id"
+			baseTableName="user_group_role" constraintName="user_group_role_fk1"
+			onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="user_role_id"
+			referencedTableName="user_role" />
+		<addForeignKeyConstraint baseColumnNames="user_group_id"
+			baseTableName="user_group_role" constraintName="user_group_role_fk2"
+			onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="user_group_id"
+			referencedTableName="user_group" />
+		<createIndex indexName="user_group_role_idx1" tableName="user_group_role"
+			unique="false">
+			<column name="user_role_id" />
+		</createIndex>
+		<createIndex indexName="user_group_role_idx2" tableName="user_group_role"
+			unique="false">
+			<column name="user_group_id" />
+		</createIndex>
+	</changeSet>
+	<changeSet id="01.08" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="user_group_user" />
+			</not>
+		</preConditions>
+		<createTable tableName="user_group_user">
+			<column name="user_group_id" type="BIGINT">
+				<constraints primaryKey="true" primaryKeyName="user_group_user_pk" />
+			</column>
+			<column name="username" type="VARCHAR2(50 BYTE)">
+				<constraints primaryKey="true" primaryKeyName="user_group_user_pk" />
+			</column>
+		</createTable>
+		<addForeignKeyConstraint baseColumnNames="username"
+			baseTableName="user_group_user" constraintName="user_group_user_fk1"
+			onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="username"
+			referencedTableName="user" />
+		<addForeignKeyConstraint baseColumnNames="user_group_id"
+			baseTableName="user_group_user" constraintName="user_group_user_fk2"
+			onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="user_group_id"
+			referencedTableName="user_group" />
+		<createIndex indexName="user_group_user_idx1" tableName="user_group_user"
+			unique="false">
+			<column name="username" />
+		</createIndex>
+		<createIndex indexName="user_group_user_idx2" tableName="user_group_user"
+			unique="false">
+			<column name="user_group_id" />
+		</createIndex>
+	</changeSet>
+
+	<changeSet id="01.09" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="APP_ID_GEN" />
+			</not>
+		</preConditions>
+		<createTable tableName="APP_ID_GEN">
+			<column name="SEQUENCE_NAME" type="VARCHAR2(50 BYTE)">
+				<constraints primaryKey="true" primaryKeyName="APP_ID_GEN_PK" />
+			</column>
+			<column name="NEXT_VAL" type="BIGINT" />
+		</createTable>
+	</changeSet>
+	<changeSet id="01.10" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="APP_AUTH_SETTING" />
+			</not>
+		</preConditions>
+		<createTable tableName="APP_AUTH_SETTING">
+			<column name="SETTINGS_ID" type="BIGINT">
+				<constraints primaryKey="true" primaryKeyName="APP_AUTH_SETTING_PK" />
+			</column>
+			<column name="DISPLAY_ORDER" type="Long"/>
+			<column name="NAME" type="VARCHAR2(50 BYTE)" />
+			<column name="PROVIDER_TYPE" type="VARCHAR2(20 BYTE)" />
+			<column name="DESCRIPTION" type="VARCHAR2(3000 BYTE)" />
+			<column name="is_disabled" type="BOOLEAN" defaultValueBoolean="false" />
+			<column name="SETTINGS_JSON" type="CLOB" />
+			<column name="client_id" type="VARCHAR2(256 BYTE)" />		
+		</createTable>
+	</changeSet>
+	<changeSet id="01.11" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="user_role_user" />
+			</not>
+		</preConditions>
+		<createTable tableName="user_role_user">
+			<column name="user_role_id" type="BIGINT">
+				<constraints primaryKey="true" primaryKeyName="user_role_user_pk" />
+			</column>
+			<column name="username" type="VARCHAR2(50 BYTE)">
+				<constraints primaryKey="true" primaryKeyName="user_role_user_pk" />
+			</column>
+		</createTable>
+		<addForeignKeyConstraint baseColumnNames="username"
+			baseTableName="user_role_user" constraintName="user_role_user_fk1"
+			onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="username"
+			referencedTableName="user" />
+		<addForeignKeyConstraint baseColumnNames="user_role_id"
+			baseTableName="user_role_user" constraintName="user_role_user_fk2"
+			onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="user_role_id"
+			referencedTableName="user_role" />
+		<createIndex indexName="user_role_user_idx1" tableName="user_role_user"
+			unique="false">
+			<column name="username" />
+		</createIndex>
+		<createIndex indexName="user_role_user_idx2" tableName="user_role_user"
+			unique="false">
+			<column name="user_role_id" />
+		</createIndex>
+	</changeSet>
+	<changeSet id="01.12" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="APP_AUTH_PERM" />
+			</not>
+		</preConditions>
+		<createTable tableName="APP_AUTH_PERM">
+			<column name="PROP_NAME" type="VARCHAR2(200 BYTE)">
+				<constraints primaryKey="true" primaryKeyName="APP_AUTH_PERM_PK" />
+			</column>
+			<column name="PROP_VALUE" type="CLOB" />
+		</createTable>
+	</changeSet>
+	<changeSet id="01.13" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="AUDIT_LOG" />
+			</not>
+		</preConditions>
+     <createTable tableName="AUDIT_LOG">
+            <column name="AUDIT_ID" type="VARCHAR2(50 BYTE)">
+                <constraints primaryKey="true" primaryKeyName="AUDIT_LOG_PK"/>
+            </column>
+            <column name="ACTION" type="VARCHAR2(20 BYTE)"/>
+            <column name="ACTION_DATE" type="timestamp"/>
+            <column name="ACTION_USER" type="VARCHAR2(50 BYTE)"/>
+            <column name="OBJ_TYPE" type="VARCHAR2(50 BYTE)"/>
+            <column name="OBJ_ID" type="VARCHAR2(50 BYTE)"/>
+            <column name="OBJ_NAME" type="VARCHAR2(500 BYTE)"/>
+            <column name="FILTER_VALUE" type="VARCHAR2(500 BYTE)"/>
+            <column name="ACTION_DETAILS" type="CLOB"/>
+        </createTable>
+        <createIndex indexName="CHANGE_HISTORY_IDX1" tableName="AUDIT_LOG">
+        	<column name="ACTION"/>
+    	</createIndex>
+        <createIndex indexName="CHANGE_HISTORY_IDX2" tableName="AUDIT_LOG">
+        	<column name="ACTION_DATE"/>
+    	</createIndex>
+        <createIndex indexName="CHANGE_HISTORY_IDX3" tableName="AUDIT_LOG">
+        	<column name="ACTION_USER"/>
+    	</createIndex>
+        <createIndex indexName="CHANGE_HISTORY_IDX4" tableName="AUDIT_LOG">
+        	<column name="OBJ_TYPE"/>
+    	</createIndex>
+        <createIndex indexName="CHANGE_HISTORY_IDX5" tableName="AUDIT_LOG">
+        	<column name="OBJ_ID"/>
+    	</createIndex>
+	</changeSet>
+	<changeSet id="01.14" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="TARGET_ENV" />
+			</not>
+		</preConditions>
+    	<createTable tableName="TARGET_ENV">
+            <column name="ENV_CODE" type="VARCHAR2(20 BYTE)">
+                <constraints primaryKey="true" primaryKeyName="TARGET_ENV_PK"/>
+            </column>
+            <column name="NAME" type="VARCHAR2(50 BYTE)"/>
+            <column name="DISPLAY_ORDER" type="FLOAT"/>
+        </createTable>
+	</changeSet>
+	<changeSet id="01.14" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="TARGET_ENV" />
+			</not>
+		</preConditions>
+    	<createTable tableName="TARGET_ENV">
+            <column name="ENV_CODE" type="VARCHAR2(20 BYTE)">
+                <constraints primaryKey="true" primaryKeyName="TARGET_ENV_PK"/>
+            </column>
+            <column name="NAME" type="VARCHAR2(50 BYTE)"/>
+            <column name="DISPLAY_ORDER" type="FLOAT"/>
+        </createTable>
+	</changeSet>
+	<changeSet id="01.15" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="PRJ_TEAM" />
+			</not>
+		</preConditions>
+    	<createTable tableName="PRJ_TEAM">
+            <column name="TEAM_CODE" type="VARCHAR2(20 BYTE)">
+                <constraints primaryKey="true" primaryKeyName="PRJ_TEAM_PK"/>
+            </column>
+            <column name="NAME" type="VARCHAR2(50 BYTE)"/>
+        </createTable>
+	</changeSet>
+	<changeSet id="01.16" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="COMP_TYPE" />
+			</not>
+		</preConditions>
+    	<createTable tableName="COMP_TYPE">
+            <column name="TYPE_CODE" type="VARCHAR2(20 BYTE)">
+                <constraints primaryKey="true" primaryKeyName="DU_TYPE_PK"/>
+            </column>
+            <column name="NAME" type="VARCHAR2(50 BYTE)"/>
+            <column name="IS_DISABLED" type="BOOLEAN"/>
+            <column name="IS_BUILDABLE" type="BOOLEAN"/>
+            <column name="IS_DEPLOYABLE" type="BOOLEAN"/>
+            <column name="IS_STARTABLE" type="BOOLEAN"/>
+            <column name="IS_STOPABLE" type="BOOLEAN"/>
+            <column name="IS_UNDEPLOYABLE" type="BOOLEAN"/>
+            <column name="IS_DELETEABLE" type="BOOLEAN"/>
+            <column name="ALLOWS_STAT_QUERY" type="BOOLEAN"/>
+            <column name="ALLOWS_LOG_QUERY" type="BOOLEAN"/>
+        </createTable>
+	</changeSet>
+	<changeSet id="01.17" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="REF_DATA_USR" />
+			</not>
+		</preConditions>
+		<createTable tableName="REF_DATA_USR">
+            <column name="REF_TYPE" type="VARCHAR2(50 BYTE)"/>
+            <column name="REF_CODE" type="VARCHAR2(50 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="REF_DATA_USR_PK"/>
+            </column>
+            <column name="IS_DISABLED" type="BOOLEAN"/>
+            <column name="DESCRIPTION" type="VARCHAR2(500 BYTE)"/>
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />
+        </createTable>
+	</changeSet>	
+	<changeSet id="01.18" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="REF_DATA_SYS" />
+			</not>
+		</preConditions>
+		<createTable tableName="REF_DATA_SYS">
+            <column name="REF_TYPE" type="VARCHAR2(50 BYTE)"/>
+            <column name="REF_CODE" type="VARCHAR2(50 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="REF_DATA_SYS_PK"/>
+            </column>
+            <column name="IS_DISABLED" type="BOOLEAN"/>
+            <column name="DESCRIPTION" type="VARCHAR2(500 BYTE)"/>
+        </createTable>
+	</changeSet>	
+	<changeSet id="01.19" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="CRED_TREE" />
+			</not>
+		</preConditions>
+		<createTable tableName="CRED_TREE">
+            <column name="NODE_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="CRED_TREE_PK"/>
+            </column>
+            <column name="NAME" type="VARCHAR2(100 BYTE)"/>
+            <column name="PARENT_NODE_ID" type="VARCHAR2(50 BYTE)">
+            <constraints nullable="true" foreignKeyName="CRED_TREE_FK1"
+					references="CRED_TREE(NODE_ID)" />
+			</column>
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />            
+        </createTable>
+        <createIndex indexName="CRED_TREE_IDX1" tableName="CRED_TREE"><column name="PARENT_NODE_ID"/></createIndex>
+	</changeSet>
+	<changeSet id="01.20" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="CRED_ENTRY" />
+			</not>
+		</preConditions>
+		<createTable tableName="CRED_ENTRY">
+            <column name="CRED_ID" type="VARCHAR2(2000 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="CRED_ENTRY_PK"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR2(4000 BYTE)"/>
+            <column name="CRED_PROVIDER" type="VARCHAR2(50 BYTE)"/>
+            <column name="CRED_TYPE" type="VARCHAR2(2000 BYTE)"/>
+            <column name="CRED_VALUE1" type="VARCHAR2(4000 BYTE)"/>
+            <column name="NODE_ID" type="VARCHAR2(2000 BYTE)">
+	            <constraints nullable="true" foreignKeyName="CRED_ENTRY_FK1"
+					references="CRED_TREE(NODE_ID)" />
+            </column>
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />
+            
+        </createTable>
+
+	</changeSet>
+	<changeSet id="01.21" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="CRED_TREE_ROLE" />
+			</not>
+		</preConditions>
+		<createTable tableName="CRED_TREE_ROLE">
+            <column name="NODE_ID" type="VARCHAR2(50 BYTE)">
+	            <constraints nullable="true" 
+	            foreignKeyName="CRED_ENTRY_ROLE_FK1" references="CRED_TREE(NODE_ID)" 
+	            primaryKey="true" primaryKeyName="CRED_TREE_ROLE_PK"/>
+            </column>
+            <column name="ROLE_ID" type="BIGINT">
+	            <constraints nullable="true" 
+	            foreignKeyName="CRED_ENTRY_ROLE_FK2" references="USER_ROLE(USER_ROLE_ID)" 
+	            primaryKey="true" primaryKeyName="CRED_TREE_ROLE_PK"/>
+            </column>
+        </createTable>
+	</changeSet>
+	<changeSet id="01.22" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="SYS_FILE" />
+			</not>
+		</preConditions>
+		<createTable tableName="SYS_FILE">
+            <column name="FILE_NAME" type="VARCHAR2(200 BYTE)">
+                <constraints primaryKey="true" primaryKeyName="SYS_FILE_PK"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR2(500 BYTE)"/>
+            <column name="FILE_TYPE" type="VARCHAR2(30 BYTE)"/>
+            <column name="FILE_SIZE" type="LONG"/>
+            <column name="CONTENTS" type="CLOB"/>
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />
+        </createTable>
+	</changeSet>
+	<changeSet id="01.23" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="RES" />
+			</not>
+		</preConditions>
+		<createTable tableName="RES">
+			<column name="RES_CODE" type="VARCHAR(50 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="RES_PK"/>
+			</column>
+			<column name="NAME" type="VARCHAR2(500 BYTE)">
+				<constraints unique="true" uniqueConstraintName="RES_NAME_UK"/>
+			</column>
+            <column name="RES_TYPE_CODE" type="VARCHAR2(20 BYTE)">
+            	<constraints  foreignKeyName="RES_FK1" references="ref_data_sys(ref_code)"/>
+            </column>
+            <column name="TEAM_CODE" type="VARCHAR2(10 BYTE)">
+            	<constraints  foreignKeyName="RES_FK2" references="prj_team(team_code)"/>
+            </column>            
+            <column name="PROCESS_CODE" type="VARCHAR2(20 BYTE)">
+            	<constraints  foreignKeyName="RES_FK3" references="ref_data_usr(ref_code)"/>
+            </column>            
+            <column name="DESCRIPTION" type="VARCHAR2(1000 BYTE)"/>
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />    
+        </createTable>
+	</changeSet>
+	<changeSet id="01.24" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="RES_HOST" />
+			</not>
+		</preConditions>
+		<createTable tableName="RES_HOST">
+			<column name="HOST_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="HOST_PK"/>
+			</column>
+			<column name="NAME" type="VARCHAR2(100 BYTE)"/>
+            <column name="LOCATION_CODE" type="VARCHAR2(20 BYTE)">
+            	<constraints  foreignKeyName="HOST_FK1" references="ref_data_usr(ref_code)"/>
+            </column>
+            <column name="OS_TYPE_CODE" type="VARCHAR2(20 BYTE)">
+            	<constraints  foreignKeyName="HOST_FK2" references="ref_data_usr(ref_code)"/>
+            </column>
+            <column name="RES_CODE" type="VARCHAR(50 BYTE)">
+	            <constraints  foreignKeyName="HOST_FK3" references="res(res_code)"/>
+            </column>
+            <column name="ENV_CODE" type="VARCHAR2(10 BYTE)">
+            	<constraints  foreignKeyName="HOST_FK4" references="target_env(env_code)"/>
+            </column>
+            <column name="OS" type="VARCHAR2(500 BYTE)"/>
+            <column name="FQDN" type="VARCHAR2(500 BYTE)"/>
+            <column name="DNS_ALIASES" type="VARCHAR2(2000 BYTE)"/>
+            <column name="CONN_CRED_ID" type="VARCHAR2(50 BYTE)"/>
+            <column name="SU_CRED_ID" type="VARCHAR2(50 BYTE)"/>
+            <column name="IS_DISABLED" type="BOOLEAN"/>
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />           
+        </createTable> 
+	</changeSet>
+	<changeSet id="01.25" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="RES_ENDPOINT" />
+			</not>
+		</preConditions>
+		<createTable tableName="RES_ENDPOINT">
+			<column name="ENDPOINT_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="RES_ENDPOINT_PK"/>
+			</column>
+            <column name="ENV_CODE" type="VARCHAR2(10 BYTE)">
+            	<constraints  foreignKeyName="RES_ENDPOINT_FK2" references="target_env(env_code)"/>
+            </column>
+            <column name="RES_CODE" type="VARCHAR(50 BYTE)">
+	            <constraints  foreignKeyName="RES_ENDPOINT_FK3" references="res(res_code)"/>
+            </column>
+			<column name="PROVIDER_CODE" type="VARCHAR2(50 BYTE)">
+			    <constraints  foreignKeyName="RES_ENDPOINT_FK1" references="ref_data_usr(ref_code)"/>
+			</column>
+            
+            <column name="IS_DISABLED" type="BOOLEAN"/>
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />           
+        </createTable> 
+	</changeSet>
+	<changeSet id="01.26" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="RES_ENDPOINT_URL" />
+			</not>
+		</preConditions>
+		<createTable tableName="RES_ENDPOINT_URL">
+			<column name="ENDPOINT_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="RES_ENDPOINT_URL_PK"/>
+			</column>
+			<column name="NAME" type="VARCHAR2(500 BYTE)">
+				<constraints primaryKey="true" primaryKeyName="RES_ENDPOINT_URL_PK"/>
+			</column>
+			<column name="URL" type="VARCHAR2(1000 BYTE)"/>
+            <column name="IS_DEFAULT" type="BOOLEAN"/>
+        </createTable> 
+	</changeSet>	
+	<changeSet id="01.27" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="RES_ENDPOINT_CRED" />
+			</not>
+		</preConditions>
+		<createTable tableName="RES_ENDPOINT_CRED">
+			<column name="ENDPOINT_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="RES_ENDPOINT_CRED_PK"/>
+			</column>
+			<column name="NAME" type="VARCHAR2(500 BYTE)">
+				<constraints primaryKey="true" primaryKeyName="RES_ENDPOINT_CRED_PK"/>
+			</column>
+			<column name="CRED_ID" type="VARCHAR2(50 BYTE)"/>
+            <column name="IS_DEFAULT" type="BOOLEAN"/>
+        </createTable> 
+	</changeSet>	
+	<changeSet id="01.28" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="SYS_PROP" />
+			</not>
+		</preConditions>
+		<createTable tableName="SYS_PROP">
+			<column name="NAME" type="VARCHAR2(3000 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="SYS_PROP_PK"/>
+			</column>
+			<column name="DESCRIPTION" type="VARCHAR2(4000 BYTE)"/>
+			<column name="TYPE_CODE" type="VARCHAR2(50 BYTE)"/>
+			<column name="CAT" type="VARCHAR2(50 BYTE)"/>
+			<column name="VALUE" type="VARCHAR2(4000 BYTE)"/>
+        </createTable> 
+	</changeSet>	
+	<changeSet id="01.29" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="PIPELINE" />
+			</not>
+		</preConditions>
+		<createTable tableName="PIPELINE">
+			<column name="PIPELINE_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="PIPELINE_PK"/>
+			</column>
+			<column name="NAME" type="VARCHAR2(3000 BYTE)">
+          		<constraints unique="true" uniqueConstraintName="PIPELINE_UK"/>
+			</column>
+			<column name="DESCRIPTION" type="VARCHAR2(4000 BYTE)"/>
+			<column name="TEAM_CODE" type="VARCHAR2(10 BYTE)">
+            	<constraints  foreignKeyName="PIPELINE_FK1" references="prj_team(team_code)"/>
+            </column>  
+			<column name="COMP_TYPE_CODE" type="VARCHAR2(20 BYTE)">
+            	<constraints  foreignKeyName="PIPELINEF_FK2" references="comp_type(type_code)"/>
+            </column>
+            <column name="IS_ABSTRACT" type="BOOLEAN"/>
+			<column name="PARENT_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints  foreignKeyName="PIPELINE_FK3" references="pipeline(PIPELINE_ID)"/>
+            </column>
+            <column name="BUILD_PIPELINE" type="CLOB"/>
+            <column name="DEPLOY_PIPELINE" type="CLOB"/>
+            <column name="START_PIPELINE" type="CLOB"/>
+            <column name="STOP_PIPELINE" type="CLOB"/>
+            <column name="UNDEPLOY_PIPELINE" type="CLOB"/>
+            <column name="DELETE_PIPELINE" type="CLOB"/>
+            <column name="QUERY_LOG_PIPELINE" type="CLOB"/>
+            <column name="QUERY_STATUS_PIPELINE" type="CLOB"/>
+            <column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />     
+        </createTable> 
+	</changeSet>	
+	<changeSet id="01.30" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="PIPELINE_PROP" />
+			</not>
+		</preConditions>
+		<createTable tableName="PIPELINE_PROP">
+			<column name="PIPELINE_PROP_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="PIPELINE_PROP_PK"/>
+			</column>
+			<column name="PIPELINE_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints foreignKeyName="PIPELINE_PROP_FK1" references="pipeline(pipeline_id)"/>
+			</column>
+			<column name="NAME" type="VARCHAR2(3000 BYTE)"/>
+			<column name="DESCRIPTION" type="VARCHAR2(4000 BYTE)"/>
+			<column name="CAT" type="VARCHAR2(20 BYTE)"/>
+			<column name="IS_ENV_BASED" type="BOOLEAN"/>
+			<column name="TYPE_CODE" type="VARCHAR2(50 BYTE)"/>
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />     
+        </createTable>
+        <createIndex indexName="PIPELINE_PROP_UK1" tableName="PIPELINE_PROP"
+			unique="true">
+			<column name="PIPELINE_ID" />
+			<column name="NAME" />
+		</createIndex>
+	</changeSet>
+	<changeSet id="01.31" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="PIPELINE_PROP_VAL" />
+			</not>
+		</preConditions>
+		<createTable tableName="PIPELINE_PROP_VAL">
+			<column name="PIPELINE_PROP_VAL_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="PIPELINE_PROP_VAL_PK"/>
+			</column>
+			<column name="PIPELINE_PROP_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints foreignKeyName="PIPELINE_PROP_VAL_FK1" references="pipeline_prop(pipeline_prop_id)"/>
+			</column>
+			<column name="ENV_CODE" type="VARCHAR2(20 BYTE)"/>
+			<column name="VALUE" type="VARCHAR2(4000 BYTE)"/>
+        </createTable>
+	</changeSet>
+	<changeSet id="01.32" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="GLOBAL_VAR" />
+			</not>
+		</preConditions>
+		<createTable tableName="GLOBAL_VAR">
+			<column name="GLOBAL_VAR_ID" type="VARCHAR2(50 BYTE)">
+				<constraints primaryKey="true" primaryKeyName="GLOBAL_VAR_PK" />
+			</column>
+			<column name="NAME" type="VARCHAR2(500 BYTE)" />
+			<column name="DESCRIPTION" type="VARCHAR2(1000 BYTE)" />
+			<column name="TYPE_CODE" type="VARCHAR2(10 BYTE)" />
+			<column name="IS_DISABLED" type="boolean" />
+			<column name="CAT" type="VARCHAR2(50 BYTE)" />
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />  			
+		</createTable>
+
+		<createIndex indexName="GLOBAL_VAR_UK1" tableName="GLOBAL_VAR"
+			unique="true">
+			<column name="NAME" />
+		</createIndex>
+	</changeSet>
+
+	<changeSet id="01.33" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="GLOBAL_VAR_VAL" />
+			</not>
+		</preConditions>
+		<createTable tableName="GLOBAL_VAR_VAL">
+			<column name="GLOBAL_VAR_VAL_ID" type="VARCHAR2(50 BYTE)">
+				<constraints primaryKey="true" primaryKeyName="GLOBAL_VAR_VAL_PK" />
+			</column>
+			<column name="GLOBAL_VAR_ID" type="VARCHAR2(50 BYTE)">
+				<constraints nullable="true" foreignKeyName="GLOBAL_VAR_VAL_FK1"
+					references="GLOBAL_VAR(GLOBAL_VAR_ID)" />
+			</column>
+			<column name="ENV_CODE" type="VARCHAR2(20 BYTE)" />
+			<column name="VALUE" type="VARCHAR2(3000 BYTE)" />
+		</createTable>
+
+		<createIndex indexName="GLOBAL_VAR_VAL_UK1" tableName="GLOBAL_VAR_VAL"
+			unique="true">
+			<column name="GLOBAL_VAR_ID" />
+			<column name="ENV_CODE" />
+		</createIndex>
+		<createIndex indexName="IDX1_GLOBAL_VAR_VAL" tableName="GLOBAL_VAR_VAL"
+			unique="false">
+			<column name="GLOBAL_VAR_ID" />
+		</createIndex>
+	</changeSet>
+    <changeSet author="jogasingh" id="01.34">
+    	<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="GLOBAL_VAR_REF" />
+			</not>
+		</preConditions>    
+        <createTable tableName="GLOBAL_VAR_REF">
+            <column name="GLOBAL_VAR_ID" type="VARCHAR2(50 BYTE)"/>
+            <column name="ENTITY_TYPE" type="VARCHAR2(50 BYTE)">
+                  <constraints primaryKey="true" primaryKeyName="GLOBAL_VAR_REF_PK"/>
+            </column>
+            <column name="ENTITY_ID" type="VARCHAR2(50 BYTE)">
+                  <constraints primaryKey="true" primaryKeyName="GLOBAL_VAR_REF_PK"/>
+            </column>
+        </createTable>
+        <createIndex indexName="GLOBAL_VAR_REF_IDX1" tableName="GLOBAL_VAR_REF">
+        	<column name="GLOBAL_VAR_ID"/>
+    	</createIndex>
+    </changeSet>
+	<changeSet author="jogasingh" id="01.35">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="COMP" />
+			</not>
+		</preConditions>
+  	 	<createTable tableName="COMP">
+            <column name="COMP_ID" type="VARCHAR2(50 BYTE)">
+                <constraints primaryKey="true" primaryKeyName="COMP_PK"/>
+            </column>
+            <column name="NAME" type="VARCHAR2(100 BYTE)"/>
+            <column name="DESCRIPTION" type="VARCHAR2(500 BYTE)"/>
+            <column name="COMP_TYPE_CODE" type="VARCHAR2(20 BYTE)">
+                <constraints nullable="false" foreignKeyName="COMP_FK1"	references="COMP_TYPE(TYPE_CODE)"/> 
+            </column>
+            <column name="TEAM_CODE" type="VARCHAR2(20 BYTE)">
+                <constraints nullable="true" foreignKeyName="COMP_FK2"	references="PRJ_TEAM(TEAM_CODE)"/> 
+            </column>
+            <column name="PIPELINE_ID" type="VARCHAR2(50 BYTE)">
+                <constraints nullable="true" foreignKeyName="COMP_FK3"	references="PIPELINE(PIPELINE_ID)"/> 
+            </column>
+			<column name="STATUS" type="VARCHAR2(3 BYTE)"/>
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />
+        </createTable>
+        <createIndex indexName="COMP_UK1" tableName="COMP" unique="true">
+            <column name="NAME"/>
+        </createIndex>
+	</changeSet>
+	<changeSet id="01.36" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="COMP_PROP" />
+			</not>
+		</preConditions>
+		<createTable tableName="COMP_PROP">
+			<column name="COMP_PROP_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="COMP_PROP_PK"/>
+			</column>
+			<column name="COMP_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints foreignKeyName="COMP_PROP_FK1" references="COMP(COMP_ID)"/>
+			</column>
+			<column name="NAME" type="VARCHAR2(3000 BYTE)"/>
+			<column name="DESCRIPTION" type="VARCHAR2(4000 BYTE)"/>
+			<column name="CAT" type="VARCHAR2(20 BYTE)"/>
+			<column name="TYPE_CODE" type="VARCHAR2(50 BYTE)"/>
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />     
+        </createTable>
+        <createIndex indexName="COMP_PROP_UK1" tableName="COMP_PROP"
+			unique="true">
+			<column name="COMP_ID" />
+			<column name="NAME" />
+		</createIndex>
+	</changeSet>
+	<changeSet id="01.37" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="COMP_PROP_VAL" />
+			</not>
+		</preConditions>
+		<createTable tableName="COMP_PROP_VAL">
+			<column name="COMP_PROP_VAL_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="COMP_PROP_VAL_PK"/>
+			</column>
+			<column name="COMP_PROP_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints foreignKeyName="COMP_PROP_VAL_FK1" references="COMP_PROP(COMP_PROP_ID)"/>
+			</column>
+			<column name="ENV_CODE" type="VARCHAR2(20 BYTE)"/>
+			<column name="VALUE" type="VARCHAR2(4000 BYTE)"/>
+        </createTable>
+	</changeSet>
+	<changeSet id="01.38" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="COMP_VER" />
+			</not>
+		</preConditions>
+		<createTable tableName="COMP_VER">
+			<column name="COMP_VER_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="COMP_VER_PK"/>
+			</column>
+			<column name="COMP_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints foreignKeyName="COMP_VER_FK1" references="COMP(COMP_ID)"/>
+			</column>
+			<column name="DESCRIPTION" type="VARCHAR2(4000 BYTE)"/>
+			<column name="VERSION" type="VARCHAR2(50 BYTE)"/>
+			<column name="STATUS" type="VARCHAR2(3 BYTE)"/>
+			<column name="RELEASE_NOTES" type="CLOB"/>
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />     
+        </createTable>
+        <createIndex indexName="COMP_VER_UK1" tableName="COMP_VER"
+			unique="true">
+			<column name="COMP_ID" />
+			<column name="VERSION" />
+		</createIndex>
+	</changeSet>
+	<changeSet id="01.39" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="COMP_VER_PROP" />
+			</not>
+		</preConditions>
+		<createTable tableName="COMP_VER_PROP">
+			<column name="COMP_VER_PROP_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="COMP_VER_PROP_PK"/>
+			</column>
+			<column name="COMP_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints foreignKeyName="COMP_VER_PROP_FK1" references="COMP(COMP_ID)"/>
+			</column>
+			<column name="NAME" type="VARCHAR2(3000 BYTE)"/>
+			<column name="DESCRIPTION" type="VARCHAR2(4000 BYTE)"/>
+			<column name="CAT" type="VARCHAR2(20 BYTE)"/>
+			<column name="TYPE_CODE" type="VARCHAR2(50 BYTE)"/>
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />     
+        </createTable>
+        <createIndex indexName="COMP_VER_PROP_UK1" tableName="COMP_VER_PROP" unique="true">
+			<column name="COMP_ID" />
+			<column name="NAME" />
+		</createIndex>
+	</changeSet>
+	<changeSet id="01.40" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="COMP_VER_PROP_VAL" />
+			</not>
+		</preConditions>
+		<createTable tableName="COMP_VER_PROP_VAL">
+			<column name="COMP_VER_PROP_VAL_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="COMP_VER_PROP_VAL_PK"/>
+			</column>
+			<column name="COMP_VER_PROP_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints foreignKeyName="COMP_VER_PROP_VAL_FK1" references="COMP_VER_PROP(COMP_VER_PROP_ID)"/>
+			</column>
+			<column name="ENV_CODE" type="VARCHAR2(20 BYTE)"/>
+			<column name="VALUE" type="VARCHAR2(4000 BYTE)"/>
+        </createTable>
+	</changeSet>
+	<changeSet id="01.41" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="COMP_VER_ACT" />
+			</not>
+		</preConditions>
+		<createTable tableName="COMP_VER_ACT">
+			<column name="COMP_VER_ACT_ID" type="VARCHAR2(50 BYTE)">
+				<constraints primaryKey="true" primaryKeyName="COMP_VER_ACT_PK" />
+			</column>
+			<column name="COMP_VER_ID" type="VARCHAR2(50 BYTE)">
+				<constraints nullable="false" foreignKeyName="COMP_VER_ACT_FK1" references="COMP_VER(COMP_VER_ID)" />
+			</column>
+			<column name="ACTION" type="VARCHAR2(20 BYTE)" />
+			<column name="ACTION_DATE" type="timestamp"></column>
+			<column name="STATUS" type="VARCHAR2(3 BYTE)" />
+			<column name="ENV_CODE" type="VARCHAR2(20 BYTE)" />
+			<column name="ACTION_USER" type="VARCHAR2(50 BYTE)" />
+			<column name="JOB_ID" type="VARCHAR2(50 BYTE)" />
+			<column name="IS_MANUAL" type="BOOLEAN" />
+		</createTable>
+		<createIndex indexName="COMP_VER_ACT_IDX1" tableName="COMP_VER_ACT" unique="false">
+			<column name="COMP_VER_ID" />
+		</createIndex>
+	</changeSet>
+	<changeSet id="01.42" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="EXT_SYS" />
+			</not>
+		</preConditions>
+		<createTable tableName="EXT_SYS">
+			<column name="SYS_CODE" type="VARCHAR2(20 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="EXT_SYS_PK"/>
+			</column>
+			<column name="SYS_TYPE_CODE" type="VARCHAR2(50 BYTE)">
+				<constraints  foreignKeyName="EXT_SYS_FK1" references="ref_data_sys(ref_code)"/>
+			</column>
+			<column name="PROVIDER_CODE" type="VARCHAR2(50 BYTE)">
+				<constraints  foreignKeyName="EXT_SYS_FK2" references="ref_data_sys(ref_code)"/>
+			</column>
+			<column name="NAME" type="VARCHAR2(200 BYTE)"/>
+			<column name="SETTINGS" type="CLOB"/>
+            <column name="IS_DISABLED" type="BOOLEAN"/>			
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />     
+        </createTable>
+        <createIndex indexName="EXT_SYS_UK1" tableName="EXT_SYS" unique="true">
+			<column name="NAME" />
+		</createIndex>
+	</changeSet>
+	<changeSet id="01.43" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="COMP_VER_REF" />
+			</not>
+		</preConditions>
+		<createTable tableName="COMP_VER_REF">
+			<column name="COMP_VER_REF_ID" type="VARCHAR2(50 BYTE)">
+				<constraints primaryKey="true" primaryKeyName="COMP_VER_REF_PK" />
+			</column>
+			<column name="COMP_VER_ID" type="VARCHAR2(50 BYTE)">
+				<constraints nullable="false" foreignKeyName="COMP_VER_REF_FK1" references="COMP_VER(COMP_VER_ID)" />
+			</column>
+			<column name="SYS_CODE" type="VARCHAR2(20 BYTE)">
+				<constraints nullable="false" foreignKeyName="COMP_VER_REF_FK2" references="EXT_SYS(SYS_CODE)" />
+			</column>
+			<column name="REF" type="VARCHAR2(200 BYTE)"/>
+			<column name="REF_TYPE_CODE" type="VARCHAR2(50 BYTE)">
+				<constraints  foreignKeyName="COMP_VER_REF_FK3" references="ref_data_sys(ref_code)"/>
+			</column>			
+			<column name="DESCRIPTION" type="VARCHAR2(3000 BYTE)"/>
+		</createTable>
+		<createIndex indexName="COMP_VER_REF_IDX1" tableName="COMP_VER_REF" unique="false">
+			<column name="COMP_VER_ID" />
+		</createIndex>
+	</changeSet>
+</databaseChangeLog>

@@ -1,0 +1,255 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+	<changeSet author="JogaSingh" id="01.01">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="oauth_client_details" />
+			</not>
+		</preConditions>
+		<createTable tableName="oauth_client_details">
+			<column name="client_id" type="VARCHAR2(256 BYTE)">
+				<constraints primaryKey="true" primaryKeyName="oauth_client_details_PK" />
+			</column>
+			<column name="resource_ids" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+			<column name="client_secret" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+			<column name="scope" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+			<column name="authorized_grant_types" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+			<column name="web_server_redirect_uri" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+			<column name="authorities" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+			<column name="access_token_validity" type="int" />
+			<column name="refresh_token_validity" type="int" />
+			<column name="additional_information" type="VARCHAR2(3000 BYTE)">
+				<constraints nullable="true" />
+			</column>
+			<column name="autoapprove" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="JogaSingh" id="01.02">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="oauth_access_token" />
+			</not>
+		</preConditions>
+		<createTable tableName="oauth_access_token">
+			<column name="authentication_id" type="VARCHAR2(256 BYTE)">
+				<constraints primaryKey="true" primaryKeyName="oauth_access_token_PK" />
+			</column>
+			<column name="token_id" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+			<column name="token" type="BLOB" />
+			<column name="user_name" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+			<column name="client_id" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+			<column name="authentication" type="BLOB" />
+			<column name="refresh_token" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="JogaSingh" id="01.03">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="oauth_refresh_token" />
+			</not>
+		</preConditions>
+		<createTable tableName="oauth_refresh_token">
+			<column name="token_id" type="VARCHAR2(256 BYTE)">
+				<constraints nullable="true" />
+			</column>
+
+			<column name="token" type="BLOB" />
+			<column name="authentication" type="BLOB" />
+		</createTable>
+	</changeSet>
+	<changeSet author="JogaSingh" id="01.04">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="user" />
+			</not>
+		</preConditions>
+		<createTable tableName="user">
+			<column name="username" type="VARCHAR2(50 BYTE)">
+				<constraints primaryKey="true" primaryKeyName="user_pk" />
+			</column>
+			<column name="password" type="VARCHAR2(3000 BYTE)" />
+			<column name="first_name" type="VARCHAR2(3006 BYTE)" />
+			<column name="last_name" type="VARCHAR2(300 BYTE)" />
+			<column name="email" type="VARCHAR2(300 BYTE)" />
+			<column name="is_system" type="BOOLEAN" defaultValueBoolean="false" />
+			<column name="is_disabled" type="BOOLEAN" defaultValueBoolean="false" />
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />
+		</createTable>
+	</changeSet>
+
+	<changeSet id="01.05" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="user_group" />
+			</not>
+		</preConditions>
+		<createTable tableName="user_group">
+			<column name="user_group_id" type="BIGINT">
+				<constraints primaryKey="true" primaryKeyName="user_group_pk" />
+			</column>
+			<column name="name" type="VARCHAR2(100 BYTE)" />
+			<column name="description" type="VARCHAR2(1000 BYTE)" />
+			<column name="is_system" type="BOOLEAN" />
+			<column name="is_disabled" type="BOOLEAN" defaultValueBoolean="false" />
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />
+			<column name="client_id" type="VARCHAR2(256 BYTE)" />				
+		</createTable>
+
+		<createIndex indexName="user_group_uk1" tableName="user_group"
+			unique="true">
+			<column name="name" />
+		</createIndex>
+	</changeSet>
+
+	<changeSet id="01.06" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="user_role" />
+			</not>
+		</preConditions>
+		<createTable tableName="user_role">
+			<column name="user_role_id" type="BIGINT">
+				<constraints primaryKey="true" primaryKeyName="user_role_pk" />
+			</column>
+			<column name="name" type="VARCHAR2(100 BYTE)" />
+			<column name="description" type="VARCHAR2(1000 BYTE)" />
+			<column name="is_system" type="BOOLEAN" />
+			<column name="is_disabled" type="BOOLEAN" defaultValueBoolean="false" />
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />
+			<column name="client_id" type="VARCHAR2(256 BYTE)" />				
+		</createTable>
+
+		<createIndex indexName="user_role_uk1" tableName="user_role"
+			unique="true">
+			<column name="name" />
+		</createIndex>
+	</changeSet>
+	<changeSet id="01.07" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="user_group_role" />
+			</not>
+		</preConditions>
+		<createTable tableName="user_group_role">
+			<column name="user_group_id" type="BIGINT">
+				<constraints primaryKey="true" primaryKeyName="user_group_role_pk" />
+			</column>
+			<column name="user_role_id" type="BIGINT">
+				<constraints primaryKey="true" primaryKeyName="user_group_role_pk" />
+			</column>
+		</createTable>
+		<addForeignKeyConstraint baseColumnNames="user_role_id"
+			baseTableName="user_group_role" constraintName="user_group_role_fk1"
+			onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="user_role_id"
+			referencedTableName="user_role" />
+		<addForeignKeyConstraint baseColumnNames="user_group_id"
+			baseTableName="user_group_role" constraintName="user_group_role_fk2"
+			onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="user_group_id"
+			referencedTableName="user_group" />
+		<createIndex indexName="user_group_role_idx1" tableName="user_group_role"
+			unique="false">
+			<column name="user_role_id" />
+		</createIndex>
+		<createIndex indexName="user_group_role_idx2" tableName="user_group_role"
+			unique="false">
+			<column name="user_group_id" />
+		</createIndex>
+	</changeSet>
+	<changeSet id="01.08" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="user_group_user" />
+			</not>
+		</preConditions>
+		<createTable tableName="user_group_user">
+			<column name="user_group_id" type="BIGINT">
+				<constraints primaryKey="true" primaryKeyName="user_group_user_pk" />
+			</column>
+			<column name="username" type="VARCHAR2(50 BYTE)">
+				<constraints primaryKey="true" primaryKeyName="user_group_user_pk" />
+			</column>
+		</createTable>
+		<addForeignKeyConstraint baseColumnNames="username"
+			baseTableName="user_group_user" constraintName="user_group_user_fk1"
+			onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="username"
+			referencedTableName="user" />
+		<addForeignKeyConstraint baseColumnNames="user_group_id"
+			baseTableName="user_group_user" constraintName="user_group_user_fk2"
+			onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="user_group_id"
+			referencedTableName="user_group" />
+		<createIndex indexName="user_group_user_idx1" tableName="user_group_user"
+			unique="false">
+			<column name="username" />
+		</createIndex>
+		<createIndex indexName="user_group_user_idx2" tableName="user_group_user"
+			unique="false">
+			<column name="user_group_id" />
+		</createIndex>
+	</changeSet>
+
+	<changeSet id="01.09" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="APP_ID_GEN" />
+			</not>
+		</preConditions>
+		<createTable tableName="APP_ID_GEN">
+			<column name="SEQUENCE_NAME" type="VARCHAR2(50 BYTE)">
+				<constraints primaryKey="true" primaryKeyName="APP_ID_GEN_PK" />
+			</column>
+			<column name="NEXT_VAL" type="BIGINT" />
+		</createTable>
+	</changeSet>
+	<changeSet id="01.10" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="APP_AUTH_SETTING" />
+			</not>
+		</preConditions>
+		<createTable tableName="APP_AUTH_SETTING">
+			<column name="SETTINGS_ID" type="BIGINT">
+				<constraints primaryKey="true" primaryKeyName="APP_AUTH_SETTING_PK" />
+			</column>
+			<column name="DISPLAY_ORDER" type="Long"/>
+			<column name="NAME" type="VARCHAR2(50 BYTE)" />
+			<column name="PROVIDER_TYPE" type="VARCHAR2(20 BYTE)" />
+			<column name="DESCRIPTION" type="VARCHAR2(3000 BYTE)" />
+			<column name="is_disabled" type="BOOLEAN" defaultValueBoolean="false" />
+			<column name="SETTINGS_JSON" type="CLOB" />
+			<column name="client_id" type="VARCHAR2(256 BYTE)" />		
+		</createTable>
+	</changeSet>
+</databaseChangeLog>

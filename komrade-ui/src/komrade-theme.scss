@@ -1,0 +1,108 @@
+@import "~@angular/material/theming";
+
+@include mat-core();
+
+$komrade-ui-primary: (
+  50: #e4e9f4,
+  100: #bcc9e3,
+  200: #90a5d1,
+  300: #6480be,
+  400: #4265b0,
+  500: #214aa2,
+  600: #1d439a,
+  700: #183a90,
+  800: #143286,
+  900: #0b2275,
+  A100: #a7b6ff,
+  A200: #748cff,
+  A400: #4162ff,
+  A700: #274dff,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #ffffff,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #ffffff,
+    A700: #ffffff
+  )
+);
+
+$komrade-ui-accent: (
+  50: #f5e4e4,
+  100: #e6bdbc,
+  200: #d69190,
+  300: #c66463,
+  400: #b94341,
+  500: #ad2220,
+  600: #a61e1c,
+  700: #9c1918,
+  800: #931413,
+  900: #830c0b,
+  A100: #ffb3b3,
+  A200: #ff8080,
+  A400: #ff4d4d,
+  A700: #ff3434,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #ffffff
+  )
+);
+
+$komrade-ui-warn: (
+  50: #eceded,
+  100: #d0d1d1,
+  200: #b1b3b3,
+  300: #929494,
+  400: #7a7d7d,
+  500: #636666,
+  600: #5b5e5e,
+  700: #515353,
+  800: #474949,
+  900: #353838,
+  A100: #99f5f5,
+  A200: #6af1f1,
+  A400: #29ffff,
+  A700: #0fffff,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000
+  )
+);
+
+$komrade-primary: mat-palette($komrade-ui-primary);
+
+$komrade-accent: mat-palette($komrade-ui-accent, A200, A100, A400);
+
+$komrade-warn: mat-palette($komrade-ui-warn);

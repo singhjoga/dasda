@@ -1,0 +1,34 @@
+<h1 mat-dialog-title>{{ 'users.user-form-title' | translate}}</h1>
+
+<form [formGroup]="fg">
+  <div mat-dialog-content>
+
+    <mat-form-field style="width: 100%">
+      <input type="text" matInput [formControlName]="USERNAME" placeholder="{{ 'form.userName' | translate }}" required>
+    </mat-form-field>
+
+    <mat-form-field style="width: 100%">
+      <input type="text" matInput [formControlName]="FIRST_NAME" placeholder="{{ 'form.firstName' | translate }}"
+        required>
+    </mat-form-field>
+
+    <mat-form-field floatLabel="Name" style="width: 100%">
+      <input type="text" matInput [formControlName]="LAST_NAME" placeholder="{{ 'form.lastName' | translate }}"
+        required>
+    </mat-form-field>
+
+    <mat-form-field floatLabel="Name" style="width: 100%">
+      <input type="text" matInput [formControlName]="EMAIL" placeholder="{{ 'form.email' | translate }}" required>
+    </mat-form-field>
+
+    <mat-form-field floatLabel="Name" style="width: 100%">
+      <input type="password" matInput [formControlName]="PASSWORD" placeholder="{{ 'form.password' | translate }}"
+        required>
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-raised-button type="submit" color="accent" (click)="save()" [class.spinner]="isLoading$ | async"
+      [disabled]="(isLoading$ | async) || !fg.valid">{{ 'actions.save' | translate}}</button>
+    <button mat-raised-button type="reset" (click)="dialogRef.close()">{{ 'actions.cancel' | translate}}</button>
+  </div>
+</form>

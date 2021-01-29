@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>{{ 'users.user-form-title' | translate}}</h1>
+<div mat-dialog-content>
+  {{ 'confirm.' + data }}
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button color="accent" (click)="dialogRef.close(true)">{{ 'actions.yes' | translate}}</button>
+  <button mat-raised-button (click)="dialogRef.close(false)">{{ 'actions.no' | translate}}</button>
+</div>
