@@ -12,3 +12,5 @@ manual_scaling:
 network:
   name: projects/vpc-nonprod-4caf/global/networks/vpc-network
   subnetwork_name: non-prod-private-us-central1
+  forwarded_ports:
+    - 80:8080
