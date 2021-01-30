@@ -19,8 +19,11 @@
 		<commons-beanutils-version>1.9.3</commons-beanutils-version>
 	</properties>
 	<build>
-
 		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
