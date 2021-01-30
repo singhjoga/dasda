@@ -1,0 +1,164 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+	<changeSet id="01.13" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="AUDIT_LOG" />
+			</not>
+		</preConditions>
+     <createTable tableName="AUDIT_LOG">
+            <column name="AUDIT_ID" type="VARCHAR2(50 BYTE)">
+                <constraints primaryKey="true" primaryKeyName="AUDIT_LOG_PK"/>
+            </column>
+            <column name="ACTION" type="VARCHAR2(20 BYTE)"/>
+            <column name="ACTION_DATE" type="timestamp"/>
+            <column name="ACTION_USER" type="VARCHAR2(50 BYTE)"/>
+            <column name="OBJ_TYPE" type="VARCHAR2(50 BYTE)"/>
+            <column name="OBJ_ID" type="VARCHAR2(50 BYTE)"/>
+            <column name="OBJ_NAME" type="VARCHAR2(500 BYTE)"/>
+            <column name="FILTER_VALUE" type="VARCHAR2(500 BYTE)"/>
+            <column name="ACTION_DETAILS" type="CLOB"/>
+        </createTable>
+        <createIndex indexName="AUDIT_LOG_IDX1" tableName="AUDIT_LOG">
+        	<column name="ACTION"/>
+    	</createIndex>
+        <createIndex indexName="AUDIT_LOG_IDX2" tableName="AUDIT_LOG">
+        	<column name="ACTION_DATE"/>
+    	</createIndex>
+        <createIndex indexName="AUDIT_LOG_IDX3" tableName="AUDIT_LOG">
+        	<column name="ACTION_USER"/>
+    	</createIndex>
+        <createIndex indexName="AUDIT_LOG_IDX4" tableName="AUDIT_LOG">
+        	<column name="OBJ_TYPE"/>
+    	</createIndex>
+        <createIndex indexName="AUDIT_LOG_IDX5" tableName="AUDIT_LOG">
+        	<column name="OBJ_ID"/>
+    	</createIndex>
+	</changeSet>
+	<changeSet id="01.16" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="COMP_TYPE" />
+			</not>
+		</preConditions>
+    	<createTable tableName="COMP_TYPE">
+            <column name="TYPE_CODE" type="VARCHAR2(20 BYTE)">
+                <constraints primaryKey="true" primaryKeyName="DU_TYPE_PK"/>
+            </column>
+            <column name="NAME" type="VARCHAR2(50 BYTE)"/>
+            <column name="IS_DISABLED" type="BOOLEAN"/>
+            <column name="IS_BUILDABLE" type="BOOLEAN"/>
+            <column name="IS_DEPLOYABLE" type="BOOLEAN"/>
+            <column name="IS_STARTABLE" type="BOOLEAN"/>
+            <column name="IS_STOPABLE" type="BOOLEAN"/>
+            <column name="IS_UNDEPLOYABLE" type="BOOLEAN"/>
+            <column name="IS_DELETEABLE" type="BOOLEAN"/>
+            <column name="ALLOWS_STAT_QUERY" type="BOOLEAN"/>
+            <column name="ALLOWS_LOG_QUERY" type="BOOLEAN"/>
+        </createTable>
+	</changeSet>
+	<changeSet author="jogasingh" id="01.35">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="COMP" />
+			</not>
+		</preConditions>
+  	 	<createTable tableName="COMP">
+            <column name="COMP_ID" type="VARCHAR2(50 BYTE)">
+                <constraints primaryKey="true" primaryKeyName="COMP_PK"/>
+            </column>
+            <column name="NAME" type="VARCHAR2(100 BYTE)"/>
+            <column name="DESCRIPTION" type="VARCHAR2(500 BYTE)"/>
+            <column name="COMP_TYPE_CODE" type="VARCHAR2(20 BYTE)">
+                <constraints nullable="false" foreignKeyName="COMP_FK1"	references="COMP_TYPE(TYPE_CODE)"/> 
+            </column>
+            <column name="TEAM_CODE" type="VARCHAR2(20 BYTE)"/>
+            <column name="PIPELINE_ID" type="VARCHAR2(50 BYTE)"/>
+			<column name="STATUS" type="VARCHAR2(3 BYTE)"/>
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />
+        </createTable>
+        <createIndex indexName="COMP_UK1" tableName="COMP" unique="true">
+            <column name="NAME"/>
+        </createIndex>
+	</changeSet>
+	<changeSet id="01.38" author="jogasingh" >
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="COMP_VER" />
+			</not>
+		</preConditions>
+		<createTable tableName="COMP_VER">
+			<column name="COMP_VER_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints primaryKey="true" primaryKeyName="COMP_VER_PK"/>
+			</column>
+			<column name="COMP_ID" type="VARCHAR2(50 BYTE)">
+            	<constraints foreignKeyName="COMP_VER_FK1" references="COMP(COMP_ID)"/>
+			</column>
+			<column name="DESCRIPTION" type="VARCHAR2(4000 BYTE)"/>
+			<column name="VERSION" type="VARCHAR2(50 BYTE)"/>
+			<column name="STATUS" type="VARCHAR2(3 BYTE)"/>
+			<column name="RELEASE_NOTES" type="CLOB"/>
+			<column name="add_date" type="timestamp" />
+			<column name="add_user" type="VARCHAR2(50 BYTE)" />
+			<column name="update_date" type="timestamp" />
+			<column name="update_user" type="VARCHAR2(50 BYTE)" />     
+        </createTable>
+        <createIndex indexName="COMP_VER_UK1" tableName="COMP_VER"
+			unique="true">
+			<column name="COMP_ID" />
+			<column name="VERSION" />
+		</createIndex>
+	</changeSet>
+	<changeSet id="01.41" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="COMP_VER_ACT" />
+			</not>
+		</preConditions>
+		<createTable tableName="COMP_VER_ACT">
+			<column name="COMP_VER_ACT_ID" type="VARCHAR2(50 BYTE)">
+				<constraints primaryKey="true" primaryKeyName="COMP_VER_ACT_PK" />
+			</column>
+			<column name="COMP_VER_ID" type="VARCHAR2(50 BYTE)">
+				<constraints nullable="false" foreignKeyName="COMP_VER_ACT_FK1" references="COMP_VER(COMP_VER_ID)" />
+			</column>
+			<column name="ACTION" type="VARCHAR2(20 BYTE)" />
+			<column name="ACTION_DATE" type="timestamp"></column>
+			<column name="STATUS" type="VARCHAR2(3 BYTE)" />
+			<column name="ENV_CODE" type="VARCHAR2(20 BYTE)" />
+			<column name="ACTION_USER" type="VARCHAR2(50 BYTE)" />
+			<column name="JOB_ID" type="VARCHAR2(50 BYTE)" />
+			<column name="IS_MANUAL" type="BOOLEAN" />
+		</createTable>
+		<createIndex indexName="COMP_VER_ACT_IDX1" tableName="COMP_VER_ACT" unique="false">
+			<column name="COMP_VER_ID" />
+		</createIndex>
+	</changeSet>
+	<changeSet id="01.43" author="jogasingh">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="COMP_VER_REF" />
+			</not>
+		</preConditions>
+		<createTable tableName="COMP_VER_REF">
+			<column name="COMP_VER_REF_ID" type="VARCHAR2(50 BYTE)">
+				<constraints primaryKey="true" primaryKeyName="COMP_VER_REF_PK" />
+			</column>
+			<column name="COMP_VER_ID" type="VARCHAR2(50 BYTE)">
+				<constraints nullable="false" foreignKeyName="COMP_VER_REF_FK1" references="COMP_VER(COMP_VER_ID)" />
+			</column>
+			<column name="SYS_CODE" type="VARCHAR2(20 BYTE)"/>
+			<column name="REF" type="VARCHAR2(200 BYTE)"/>
+			<column name="REF_TYPE_CODE" type="VARCHAR2(50 BYTE)"/>
+			<column name="DESCRIPTION" type="VARCHAR2(3000 BYTE)"/>
+		</createTable>
+		<createIndex indexName="COMP_VER_REF_IDX1" tableName="COMP_VER_REF" unique="false">
+			<column name="COMP_VER_ID" />
+		</createIndex>
+	</changeSet>
+</databaseChangeLog>

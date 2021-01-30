@@ -1,0 +1,10 @@
+2021-01-29 20:16:35 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "DATABASECHANGELOGLOCK" not found; SQL statement:
+SELECT COUNT(*) FROM PUBLIC.DATABASECHANGELOGLOCK [42102-199]
+2021-01-29 20:16:36 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "OAUTH_CLIENT_DETAILS" not found; SQL statement:
+INSERT INTO
+			oauth_client_details (client_id,client_secret,resource_ids,	scope,authorized_grant_types,authorities,
+			access_token_validity,refresh_token_validity)
+			VALUES ('komrade-server','$2a$10$05uMnmpMsnfTWhSiGOE7GuoxwEIqlDzQYMK6a3r9VSrgWLRRXO/La','komrade-api',
+			'read,write','check_token,refresh_token,password','ROLE_ALL',25000,250000) [42102-199]
