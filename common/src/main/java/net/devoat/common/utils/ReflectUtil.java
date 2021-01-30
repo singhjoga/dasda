@@ -34,9 +34,9 @@ public class ReflectUtil {
 		if (source == null || target == null) {
 			return null;
 		}
-		DiffBuilder builder=null;
+		DiffBuilder<?> builder=null;
 		if (returnChanges) {
-			builder = new DiffBuilder(target, source, ToStringStyle.NO_CLASS_NAME_STYLE);
+			builder = new DiffBuilder<>(target, source, ToStringStyle.NO_CLASS_NAME_STYLE);
 		}
 		for (String filedName : fieldNames) {
 			try {
@@ -63,7 +63,7 @@ public class ReflectUtil {
 	}
 	
 	public static String diff(Object oldObj, Object newObj, String... fieldNames) {
-		DiffBuilder builder = new DiffBuilder(oldObj, newObj, ToStringStyle.NO_CLASS_NAME_STYLE);
+		DiffBuilder<?> builder = new DiffBuilder<>(oldObj, newObj, ToStringStyle.NO_CLASS_NAME_STYLE);
 		for (String filedName : fieldNames) {
 			try {
 				Object oldValue = PropertyUtils.getProperty(oldObj, filedName);
