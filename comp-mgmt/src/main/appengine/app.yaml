@@ -1,7 +1,7 @@
-runtime: java
-env: flex
-runtime_config:
-  jdk: openjdk8
+runtime: java11
+#env: flex
+#runtime_config:
+#  jdk: openjdk8
 env_variables:
 #  SPRING_PROFILES_ACTIVE: "gcp,mysql"
 handlers:
@@ -12,12 +12,12 @@ manual_scaling:
 #network:
 #  name: projects/vpc-nonprod-4caf/global/networks/vpc-network
 #  subnetwork_name: non-prod-private-us-central1
-readiness_check:
-  path: "/"
-  check_interval_sec: 5
-  timeout_sec: 4
-  failure_threshold: 2
-  success_threshold: 2
-  app_start_timeout_sec: 1800
+#readiness_check:
+#  path: "/"
+#  check_interval_sec: 5
+#  timeout_sec: 4
+#  failure_threshold: 2
+#  success_threshold: 2
+#  app_start_timeout_sec: 1800
  # forwarded_ports:
  #   - 80:8080
