@@ -9,9 +9,11 @@ handlers:
   script: this field is required, but ignored
 manual_scaling: 
   instances: 1
-network:
-  name: projects/vpc-nonprod-4caf/global/networks/vpc-network
-  subnetwork_name: non-prod-private-us-central1
+#network:
+#  name: projects/vpc-nonprod-4caf/global/networks/vpc-network
+#  subnetwork_name: non-prod-private-us-central1
+vpc_access_connector:
+  name: projects/vpc-nonprod-4caf/locations/europe-west6/connectors/serverless-connector
 #readiness_check:
 #  path: "/"
 #  check_interval_sec: 5
