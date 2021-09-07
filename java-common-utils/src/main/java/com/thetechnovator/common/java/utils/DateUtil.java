@@ -2,19 +2,30 @@ package com.thetechnovator.common.java.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DateUtil {
 	public static final Logger LOG = LoggerFactory.getLogger(DateUtil.class);
 	public static final String GERMAN_DATE_TIME = "dd.MM.yyyy HH:mm:ss";
+	public static final String JSON_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
 	public static final String GERMAN_DATE = "dd.MM.yyyy";
-	private static final SimpleDateFormat germanDateTimeFormat = new SimpleDateFormat(GERMAN_DATE_TIME);
-	private static final SimpleDateFormat germanDateFormat = new SimpleDateFormat(GERMAN_DATE);
+	public static final String JSON_DATE = "yyyy-MM-dd";
+	public static final SimpleDateFormat germanDateTimeFormat = new SimpleDateFormat(GERMAN_DATE_TIME);
+	public static final SimpleDateFormat germanDateTimeFormatUtc = new SimpleDateFormat(GERMAN_DATE_TIME);
+	public static final SimpleDateFormat jsonDateTimeFormat = new SimpleDateFormat(JSON_DATE_TIME);
+	public static final SimpleDateFormat germanDateFormat = new SimpleDateFormat(GERMAN_DATE);
+	public static final SimpleDateFormat jsonDateFormat = new SimpleDateFormat(JSON_DATE);
 
 	/**
 	 * Returns date string in German date time format i.e.dd.MM.yyyy HH:mm:ss
@@ -42,7 +53,22 @@ public class DateUtil {
 			return null;
 		}
 	}
-
+	public static Date toDateFromGermanFormat(String germanDateString) {
+		try {
+			return germanDateFormat.parse(germanDateString);
+		} catch (ParseException e) {
+			LOG.warn(e.getMessage());
+			return null;
+		}
+	}
+	public static Date toDateFromJsonFormat(String jsonDateString) {
+		try {
+			return jsonDateFormat.parse(jsonDateString);
+		} catch (ParseException e) {
+			LOG.warn(e.getMessage());
+			return null;
+		}
+	}
 	public static Date toDateTime(String germanDateTimeString) {
 		try {
 			return germanDateTimeFormat.parse(germanDateTimeString);
@@ -51,7 +77,34 @@ public class DateUtil {
 			return null;
 		}
 	}
-
+	public static Date toDateTimeFromGermanFormat(String germanDateTimeString) {
+		try {
+			return germanDateTimeFormat.parse(germanDateTimeString);
+		} catch (ParseException e) {
+			LOG.warn(e.getMessage());
+			return null;
+		}
+	}
+	public static Date toDateTimeFromJsonFormat(String jsonDateTimeString) {
+		try {
+			return jsonDateTimeFormat.parse(jsonDateTimeString);
+		} catch (ParseException e) {
+			LOG.warn(e.getMessage());
+			return null;
+		}
+	}
+	public static boolean isDateTimeFromGermanFormat(String germanDateTimeString) {
+		return toDateTimeFromGermanFormat(germanDateTimeString) != null;
+	}
+	public static boolean isDateTimeFromJsonFormat(String jsonDateTimeString) {
+		return toDateTimeFromJsonFormat(jsonDateTimeString) != null;
+	}
+	public static boolean isDateFromGermanFormat(String germanDateString) {
+		return toDateFromGermanFormat(germanDateString) != null;
+	}
+	public static boolean isDateFromJsonFormat(String jsonDateString) {
+		return toDateFromJsonFormat(jsonDateString) != null;
+	}
 	public static String toDateString(Date date) {
 		if (date == null)
 			return null;
@@ -73,6 +126,47 @@ public class DateUtil {
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
+
+		return cal.getTime();
+	}
+	public static Date minDate() {
+
+		Calendar cal = new GregorianCalendar();
+		cal.set(Calendar.YEAR, 1970);
+		cal.set(Calendar.MONTH, Calendar.JANUARY);
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+
+		return cal.getTime();
+	}
+	public static Date maxDate() {
+
+		Calendar cal = new GregorianCalendar();
+		cal.set(Calendar.YEAR, 9999);
+		cal.set(Calendar.MONTH, Calendar.DECEMBER);
+		cal.set(Calendar.DAY_OF_MONTH, 31);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+
+		return cal.getTime();
+	}
+	
+	public static Date toStartOfDayUTC(Date date) {
+		if (date == null)
+			return null;
+		germanDateTimeFormatUtc.setTimeZone(TimeZone.getTimeZone("UTC"));
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(date);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		//cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 
 		return cal.getTime();
 	}
@@ -110,5 +204,29 @@ public class DateUtil {
 		}
 		
 		return sb.toString();
+	}
+	
+	public static LocalTime parseLocalTime(String time, DateTimeFormatter dateFormatter) {
+		if (StringUtils.isEmpty(time)) {
+			return null;
+		}
+		try {
+			LocalTime result = LocalTime.parse(time, dateFormatter);
+			return result;
+		} catch (DateTimeParseException e) {
+			return null;
+		}
+	}
+
+	public static LocalDate parseLocalDate(String date, DateTimeFormatter dateFormatter) {
+		if (StringUtils.isEmpty(date)) {
+			return null;
+		}
+		try {
+			LocalDate result = LocalDate.parse(date, dateFormatter);
+			return result;
+		} catch (DateTimeParseException e) {
+			return null;
+		}
 	}
 }
