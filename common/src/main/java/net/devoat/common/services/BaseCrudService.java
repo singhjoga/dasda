@@ -237,7 +237,7 @@ public abstract class BaseCrudService<T extends IdentifiableEntity<ID>, ID exten
 		return clientId;
 	}
 	public String copyUpdatableFields(T saved, T obj) {
-		DiffBuilder builder = new DiffBuilder(saved, obj, ToStringStyle.NO_CLASS_NAME_STYLE);
+		DiffBuilder<?> builder = new DiffBuilder<>(saved, obj, ToStringStyle.NO_CLASS_NAME_STYLE);
 
 		for (Field field : obj.getClass().getDeclaredFields()) {
 			field.setAccessible(true);
